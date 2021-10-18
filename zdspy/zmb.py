@@ -154,6 +154,8 @@ class ZMB_MPOB_CE:
         buffer = d.w_UInt32(buffer, 0, self.mapobjectid)
         buffer = d.w_UInt8(buffer, 4, self.position_x)
         buffer = d.w_UInt8(buffer, 5, self.position_y)
+        buffer = d.w_SInt16(buffer, 6, self.rotation)
+        buffer = d.w_UInt32(buffer, 8, self.bmgscriptid)
 
         return buffer
 
