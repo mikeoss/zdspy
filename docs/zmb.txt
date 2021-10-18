@@ -1,0 +1,199 @@
+# Source: https://github.com/AuriRex/zdspy/issues/1#issue-545196323
+
+# ZMB File
+
+All values are stored as little endian unless stated otherwise.
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|char[8]|always magic string 'BPAM1BMZ'|
+|08|u32|File Size|
+|0C|u32|Number of sections in file (9 in LoZPH, 11 in LoZST)|
+|10|u8[16]|always '04 03 02 01 04 03 02 01 04 03 02 01 04 03 02 01'|
+|20|Section[9 or 11]|9 (LoZPH) or 11 (LoZST) different sections of varying sizes|
+
+# Sections
+
+ZMB files have the following sections:
+
++ LDLB (Spirit Tracks only)
++ ROMB
++ ROOM
++ ARAB
++ RALB
++ WARP
++ CAME
++ CMPT (Spirit Tracks only)
++ PLYR
++ MPOB
++ NPCA
+
+Every section has the following structure:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|char[4]|magic section string|
+|04|u32|Total length|
+|02|u16|Element count (n)|
+|02|s16|Unknown; usually always the same for a given section type|
+|0C|Element[n]|n elements (structure depends on which section it is; may not all be of equal length)|
+
+## LDLB (Spirit Tracks only) / ???
+
+(Unknown header value is always -1)
+
+Unknown. Something to do with script triggers?
+
+Each element is 8 bytes long. First byte or two (?) seems to be a zone ID.
+
+## ROMB / Model Heightmap
+
+(Unknown header value is always 0 or 0x30)
+
+Unknown! Each element is claimed to be 0xC0 bytes long, but it seems more complicated than just an array.
+
+## ROOM / Room Settings
+
+(Unknown header value is always 0x0304)
+
+There is always one element, which is 0x20 long:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|s8|Unknown|
+|01|s8|Skybox type|
+|02|s16|Draw distance, or similar|
+|04|s16|Unknown|
+|05|s8|Music ID|
+|06|s8|Lighting type|
+|18|u8|In LoZST, related to whether or not Phantom Zelda spawns|
+|1C|u16|Liquid type (water, lava, etc)|
+
+(rest is unknown)
+
+## ARAB / Locations (probably "Area Bounds")
+
+(Unknown header value is always -1)
+
+Elements are 0x0C long in LoZPH and 0x10 long in LoZST:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|u8|ID|
+|01|u8|Unknown|
+|02|s16|Unknown|
+|04|s16|Y1|
+|06|s16|X1|
+|08|s16|Y2|
+|0A|s16|X2|
+|0C|u8|(Spirit Tracks only) Lock camera to area|
+
+(rest (Spirit Tracks only) is unknown)
+
+## RALB / Paths
+
+(Unknown header value is always -1)
+
+Section header specifies how many paths there are.
+
+Each path begins with the following header (0x08 long in LoZPH, 0x0C long in LoZST):
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|u8|Unknown|
+|00|u8|Number of nodes|
+
+(rest is unknown)
+
+This is followed by nodes (0x0C long in LoZPH, variable length in LoZST):
+
+|Offset|Type|Description|
+|------|----|-----------|
+|05|u8|X position?|
+|0D|u8|Y position?|
+|12|u8|(Spirit Tracks only) Total length of this node entry|
+
+(rest is unknown)
+
+## WARP / Exits
+
+(Unknown header value is always -1)
+
+Each element is 0x18 bytes long:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|u8|Warp ID / Unique ID / Primary Key|
+|01|u8|Fade / Transition Type|
+|02|u8|Destination Area ID|
+|03|u8|Destination Warp ID (PLYR)|
+|04|char[16]|Destination Map Name /[BigEndian]/ |
+|14|u32|Rotation|
+
+(rest is unknown)
+
+## CAME / Camera
+
+(Unknown header value is always -1)
+
+Each element is 0x1C bytes long. Unknown!
+
+## CMPT (Spirit Tracks only) / ???
+
+(Unknown header value is always -1)
+
+Each element is 0x10 bytes long. Unknown!
+
+## PLYR / Entrances
+
+(Unknown header value is always 0x0304)
+
+Each element is 0x10 (LoZPH) or 0x14 (LoZST) bytes long:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|s32|X position|
+|04|s32|Z position|
+|08|s32|Y position|
+|0C|s16|Rotation|
+|0E|u8|ID|
+|0F|u8|Unknown|
+|10|u8|(Spirit Tracks only) 0 = Link entrance, 1 = Zelda entrance|
+|11|u8|(Spirit Tracks only) Unknown|
+|12|u8|(Spirit Tracks only) 0 = Spawn on floor, 1 = Use Z position|
+|13|u8|(Spirit Tracks only) Padding|
+
+(rest is unknown)
+
+## MPOB / Map Objects
+
+(Unknown header value is always -1)
+
+Each element is 0x1C bytes long:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|u32 (LoZPH) or char[4] (LoZST)|Type|
+|04|u8|X position|
+|05|u8|Y position|
+|06|s16|Rotation|
+|14|u32|BMG script ID|
+
+(rest is unknown)
+
+## NPCA / NPC Actors
+
+(Unknown header value is always -1)
+
+Each element is 0x1C bytes long:
+
+|Offset|Type|Description|
+|------|----|-----------|
+|00|u32 (LoZPH) or char[4] (LoZST)|Type|
+|04|s16|X position|
+|06|s16|Y position|
+|08|s16|Z position|
+|0A|s16|Rotation|
+|18|u32|BMG script ID|
+
+(rest is unknown)
