@@ -141,6 +141,8 @@ class ZMB_MPOB_CE:
 
         self.rotation = d.SInt16(self.data, 6)
 
+        self.bmgscriptid = d.UInt32(self.data, 8)
+
         debug_print("OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data[8:].hex()) + " [:"+str(num)+"] ")
     
     def __str__(self) -> str:
