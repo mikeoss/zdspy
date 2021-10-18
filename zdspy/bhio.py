@@ -1,6 +1,7 @@
 
 from . import dataio as d
 from . import gheader as gh
+from .helpers import debug_print
 
 
 ################################################################
@@ -31,7 +32,7 @@ class HFND(gh.ZDS_GenericElementHeaderIDO):
         self.pointer = 16
         self.obj_id_string = d.Decode(self.data[16:20])
 
-        print("Object Identifier: "+self.obj_id_string)
+        debug_print("Object Identifier: "+self.obj_id_string)
 
         self.add_offset = d.UInt32(self.data, self.pointer + 4)
 
@@ -39,7 +40,7 @@ class HFND(gh.ZDS_GenericElementHeaderIDO):
 
         for b in self.inbetween_data:
             if not b == 0:
-                print("Non Zero Inbtwn: "+str(self.inbetween_data))
+                debug_print("Non Zero Inbtwn: "+str(self.inbetween_data))
                 break
 
         self.pointer = self.pointer + 8 + self.add_offset
@@ -52,10 +53,10 @@ class HFND(gh.ZDS_GenericElementHeaderIDO):
                 self.tmp = self.data[self.pointer + (len(HFND.olid[i])//2) :self.pointer+16]
                 for b in self.tmp:
                     if not b == 0:
-                        print("OLine"+str(i)+": "+str(self.tmp.hex()))
+                        debug_print("OLine"+str(i)+": "+str(self.tmp.hex()))
                         break
             else:
-                print("OL"+str(i)+": Wrong Identification! I wont stop you but things might break.")
+                debug_print("OL"+str(i)+": Wrong Identification! I wont stop you but things might break.")
             
             setattr(self, "obj_params_"+str(i), self.tmp)
 
@@ -90,26 +91,26 @@ class BHIO(gh.ZDS_GenericElementHeaderRaw):
 
     def init(self):
         if self.identification != "HFND":
-            print("Not a .bhio File!")
+            debug_print("Not a .bhio File!")
             return
         self.pointer = d.UInt32(self.data, 8)
         self.children_count = d.UInt32(self.data, 12)
         self.children = []
         self.inbetween_data = self.data[16:self.pointer]
 
-        print("Inbtwn:"+str(self.inbetween_data.hex()))
-        print("Children: "+str(self.children_count))
+        debug_print("Inbtwn:"+str(self.inbetween_data.hex()))
+        debug_print("Children: "+str(self.children_count))
 
         for i in range(self.children_count):
             self.tmp = d.UInt32(self.data, self.pointer + 8)
             gen = gh.NDS_GenericTempContainer(self.data[self.pointer:self.pointer+self.tmp])
             self.pointer = self.pointer+self.tmp
-            print("-------------- NEW OBJECT --------------")
-            print("["+str(i)+"] "+gen.identification + " Size: "+str(gen.size2))
+            debug_print("-------------- NEW OBJECT --------------")
+            debug_print("["+str(i)+"] "+gen.identification + " Size: "+str(gen.size2))
             if gen.identification == "HFND":
                 self.children.append( HFND(gen.data) )
             else:
-                print("Non HFND Header Identification!")
+                debug_print("Non HFND Header Identification!")
 
     def calculate_size(self):
         self.size = 16 + len(self.inbetween_data) + len(self.children) * 160

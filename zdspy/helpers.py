@@ -3,6 +3,11 @@ import ndspy.lz10
 import ndspy.narc
 import os
 
+PRINT_ENABLED = False
+def debug_print(*args):
+    if PRINT_ENABLED:
+        print(*args)
+
 class ZDS_PH_AREA:
     """An object that represents a single `mapXY.bin` file."""
     filename: str

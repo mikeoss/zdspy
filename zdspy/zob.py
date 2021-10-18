@@ -1,5 +1,6 @@
 from . import dataio as d
 from . import gheader as gh
+from .helpers import debug_print
 
 class ZOB_NPC(gh.ZDS_GenericElementHeaderRaw):
 
@@ -10,13 +11,13 @@ class ZOB_NPC(gh.ZDS_GenericElementHeaderRaw):
         self.children = []
         self.padding = d.UInt16(self.data, 14)
 
-        print("Unknown_1:",self.unknown_1)
-        print("Unknown_2:",self.unknown_2)
+        debug_print("Unknown_1:",self.unknown_1)
+        debug_print("Unknown_2:",self.unknown_2)
 
         self.pointer = 16
         for i in range(self.children_count):
             self.children.append( ZOB_NPC_CE(self.data[self.pointer:self.pointer+4]) )
-            print(i,"-",self.children[len(self.children)-1])
+            debug_print(i,"-",self.children[len(self.children)-1])
             self.pointer = self.pointer + 4
 
 class ZOB_NPC_CE:
@@ -37,13 +38,13 @@ class ZOB(gh.ZDS_GenericElementHeaderRaw):
         self.children = []
         self.padding = d.UInt16(self.data, 14)
 
-        print("Unknown_1:",self.unknown_1)
-        print("Unknown_2:",self.unknown_2)
+        debug_print("Unknown_1:",self.unknown_1)
+        debug_print("Unknown_2:",self.unknown_2)
 
         self.pointer = 16
         for i in range(self.children_count):
             self.children.append( ZOB_CE(self.data[self.pointer:self.pointer+4]) )
-            print(i,"-",self.children[len(self.children)-1])
+            debug_print(i,"-",self.children[len(self.children)-1])
             self.pointer = self.pointer + 4
 
 class ZOB_CE:

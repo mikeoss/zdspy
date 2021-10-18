@@ -1,6 +1,7 @@
 
 from . import dataio as d
 from . import gheader as gh
+from .helpers import debug_print
 
 
 ################################################################
@@ -17,13 +18,13 @@ class ZCLB_CE:
         self.size = len(self.data)
         self.read_size = d.UInt32(self.data[:4],0)
         if self.size != self.read_size:
-            print("[ERROR] Size doesnt match!")
+            debug_print("[ERROR] Size doesnt match!")
 
         self.level_name = self.data[4:20].decode()
         self.level_name_translation = self.data[20:36]#.decode("UTF-16")
 
-        print("Size: "+str(self.size))
-        print("ZCLB_CE:"+" LevelName:"+self.level_name + " Translation?(UTF-16?):" + str(self.level_name_translation.hex()) + " HEX:"+self.data[36:].hex()+" [:"+str(num)+"]")
+        debug_print("Size: "+str(self.size))
+        debug_print("ZCLB_CE:"+" LevelName:"+self.level_name + " Translation?(UTF-16?):" + str(self.level_name_translation.hex()) + " HEX:"+self.data[36:].hex()+" [:"+str(num)+"]")
 
     def calculate_size(self):
         self.size = len(self.data)
@@ -46,7 +47,7 @@ class CLB(gh.ZDS_GenericElementHeaderRaw): # ZCLB():
 
     def init(self):
         if self.identification != "BLCZ": # Spaghetti :P
-            print("Not a .clb File!")
+            debug_print("Not a .clb File!")
             return
         
         self.wrongsize = d.UInt32(self.data, 4)
@@ -59,7 +60,7 @@ class CLB(gh.ZDS_GenericElementHeaderRaw): # ZCLB():
         self.pointer = 16
 
         for i in range(self.children_count):
-            print("-------------- NEW ELEMENT --------------")
+            debug_print("-------------- NEW ELEMENT --------------")
             self.child_size = d.UInt32(self.data, self.pointer)
             self.children.append( ZCLB_CE(self.data[self.pointer:self.pointer+self.child_size], i) )
             self.pointer = self.pointer + self.child_size

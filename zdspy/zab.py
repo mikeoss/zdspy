@@ -1,7 +1,6 @@
-
 from . import dataio as d
 from . import gheader as gh
-
+from .helpers import debug_print
 
 ###############################################################
 ## .zab  (ZCAB) File Start
@@ -48,7 +47,7 @@ class ZCAB_CABM(gh.ZDS_GenericElementHeaderRaw):
         self.padding1 = d.UInt16(self.data, 10) # = 0x0000  |  TO BE CONFIRMED!
 
         if not self.padding1 == 0:
-            print("Padding has NON Zero Value: "+str(self.padding1))
+            debug_print("Padding has NON Zero Value: "+str(self.padding1))
 
         self.mapsizex = d.UInt8(self.data, 12)
         self.mapsizey = d.UInt8(self.data, 13)
@@ -62,13 +61,13 @@ class ZCAB_CABM(gh.ZDS_GenericElementHeaderRaw):
             self.children.append( ZCAB_CABM_CE( self.data[self.pointer:self.pointer+8], i ) )
             self.pointer = self.pointer + 8
 
-        print("MBAC Size: "+str(self.size))
-        print("MBAC UNKNW1: "+str(self.unknwn1))
-        print("MBAC UNKNW2: "+str(self.unknwn2))
-        # print("MBAC PAD1: "+str(self.padding1))
-        print("MBAC MS_X: "+str(self.mapsizex))
-        print("MBAC MS_Y: "+str(self.mapsizey))
-        print("MBAC Children: "+str(self.children_count))
+        debug_print("MBAC Size: "+str(self.size))
+        debug_print("MBAC UNKNW1: "+str(self.unknwn1))
+        debug_print("MBAC UNKNW2: "+str(self.unknwn2))
+        # debug_print("MBAC PAD1: "+str(self.padding1))
+        debug_print("MBAC MS_X: "+str(self.mapsizex))
+        debug_print("MBAC MS_Y: "+str(self.mapsizey))
+        debug_print("MBAC Children: "+str(self.children_count))
 
     def calculate_size(self):
         self.size = 16 + 8 * len(self.children)
@@ -106,7 +105,7 @@ class ZCAB_CABM_CE:
         self.areaid = d.UInt8(data, 2)
         self.floornum = d.Int8(data, 3)
         # TODO: Find out what the Bytes change ingame
-        print("M_CE: UID:"+str(self.uid)+ " LID:"+str(self.localid)+ " AID:"+str(self.areaid)+" FNUM:"+str(self.floornum)+" HEX:"  +str(self.data[4:].hex()) + "   [:"+str(num)+"]")
+        debug_print("M_CE: UID:"+str(self.uid)+ " LID:"+str(self.localid)+ " AID:"+str(self.areaid)+" FNUM:"+str(self.floornum)+" HEX:"  +str(self.data[4:].hex()) + "   [:"+str(num)+"]")
 
     def save(self):
         buffer = self.data
@@ -127,8 +126,8 @@ class ZCAB_CABI(gh.ZDS_GenericElementHeader):
             self.children.append( ZCAB_CABI_CE( self.data[self.pointer:self.pointer+12] , i ) )
             self.pointer = self.pointer + 12
 
-        print("IBAC Size: "+str(self.size))
-        print("IBAC Children: "+str(self.children_count))
+        debug_print("IBAC Size: "+str(self.size))
+        debug_print("IBAC Children: "+str(self.children_count))
 
     def calculate_size(self):
         self.size = 12 + 12 * len(self.children)
@@ -158,7 +157,7 @@ class ZCAB_CABI_CE:
         self.unknwn2 = d.UInt32(self.data, 5) # Probably Not a UInt32 ! ( 4x UInt8 Flags ? / Coords + Rotation)
 
         # TODO: Find out what the Bytes change ingame
-        print("I_CE: UNKNWN1:"+str(self.unknwn1) + " UIDR:"+str(self.UID_ref) + " UNKNWN2:"+str(self.unknwn2) + "   [:"+str(num)+"] - Hex (Unknwn2): "+str(self.data[5:].hex()))
+        debug_print("I_CE: UNKNWN1:"+str(self.unknwn1) + " UIDR:"+str(self.UID_ref) + " UNKNWN2:"+str(self.unknwn2) + "   [:"+str(num)+"] - Hex (Unknwn2): "+str(self.data[5:].hex()))
 
     def save(self):
         return self.data + b'\xFF\xFF\xFF'

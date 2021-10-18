@@ -1,6 +1,8 @@
 # E
 import struct
 
+from .helpers import debug_print
+
 def ReadFile(filename):
     file_content: bytearray
     with open(filename, "rb") as binary_file:
@@ -19,7 +21,7 @@ def w_UTF8String(data: bytearray, offset: int, length: int, string: str) -> byte
     """Write the str `string` into the bytearray `data` at offset `offset` with length `length` using the UTF-8 encoding."""
 
     if len(string) > length:
-        print("[WARNING] String too long for valid space: "+str(length)+" - string truncated!")
+        debug_print("[WARNING] String too long for valid space: "+str(length)+" - string truncated!")
         string = string[:length]
     data[offset:offset+len(string)] = string.encode()
     return data
@@ -71,15 +73,15 @@ def SFix(data, offset, n_bits=32, n_bits_int=16 ,islittleendian=True) -> float:
         f: float = 0.0
 
         nums = str(bin(int(nums.hex(), base=16)))[2:].rjust(n_bits, "0")
-        # print(nums)
+        # debug_print(nums)
         if nums[0] == "1":
             is_negative = True
             nums_i = nums[:n_bits_int]
             nums_f = nums[n_bits_int:]
-            # print(nums_i)
-            # print(nums_f)
+            # debug_print(nums_i)
+            # debug_print(nums_f)
             nums = _twos(nums_i) + _ones(nums_f)
-        # print(nums)
+        # debug_print(nums)
         power = n_bits_int-2
         for c in nums[1:]:
             f = f + int(c) * (2 ** power)
@@ -328,29 +330,29 @@ if __name__ == "__main__":
     datanew = bytearray(7)
     dataold = bytearray(7)
 
-    print(175)
+    debug_print(175)
     datanew = w_UInt8(datanew, 0, 175, False)
     dataold = od.w_UInt8(dataold, 0, 175, False)
 
-    print(48830)
+    debug_print(48830)
     datanew = w_UInt16(datanew, 1, 48830, False)
     dataold = od.w_UInt16(dataold, 1, 48830, False)
 
-    print(-305419896)
+    debug_print(-305419896)
     datanew = w_SInt32(datanew, 3, -305419896, True)
     dataold = od.w_SInt32(dataold, 3, -305419896, True)
 
-    print(datanew.hex())
-    print(dataold.hex())
+    debug_print(datanew.hex())
+    debug_print(dataold.hex())
 
-    print("1: " + UInt8(datanew, 0, False).__str__())
-    print("1: " + od.UInt8(dataold, 0, False).__str__())
+    debug_print("1: " + UInt8(datanew, 0, False).__str__())
+    debug_print("1: " + od.UInt8(dataold, 0, False).__str__())
 
-    print("2: " + UInt16(datanew, 1, False).__str__())
-    print("2: " + od.UInt16(dataold, 1, False).__str__())
+    debug_print("2: " + UInt16(datanew, 1, False).__str__())
+    debug_print("2: " + od.UInt16(dataold, 1, False).__str__())
 
-    print("4: " + SInt32(datanew, 3, True).__str__())
-    print("4: " + od.SInt32(dataold, 3, True).__str__())
+    debug_print("4: " + SInt32(datanew, 3, True).__str__())
+    debug_print("4: " + od.SInt32(dataold, 3, True).__str__())
     
     #48830
     #3452816845

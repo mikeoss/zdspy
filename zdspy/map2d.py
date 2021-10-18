@@ -1,6 +1,7 @@
+import sys
 
 from . import dataio as d
-import sys
+from .helpers import debug_print
 
 class MAP2D_PAL_CE:
 
@@ -52,7 +53,7 @@ class MAP2D_PAL: # .nbfp
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            print("Module \"PIL\" not installed!")
+            debug_print("Module \"PIL\" not installed!")
             return None
 
         image = Image.new('RGB', (16, 16), color = 'black')
@@ -101,9 +102,9 @@ class MAP2D_SCREEN_CE:
         try:
             tile = ts.tiles[self.tile_num]
         except IndexError:
-            print("INDEX ERROR: Tile Num:",self.tile_num)
-            print("HEX: 0x"+self.data.hex())
-            print("BS:  "+self.bitstring)
+            debug_print("INDEX ERROR: Tile Num:",self.tile_num)
+            debug_print("HEX: 0x"+self.data.hex())
+            debug_print("BS:  "+self.bitstring)
             input("BreakPoint :> (This should not happen.)")
             tile = ts.tiles[0]
             return tile.get_tile()
@@ -151,7 +152,7 @@ class MAP2D_SCREEN: # .nbfs
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            print("Module \"PIL\" not installed!")
+            debug_print("Module \"PIL\" not installed!")
             return None
 
         if self.tile_set == None:
@@ -171,13 +172,13 @@ class MAP2D_SCREEN: # .nbfs
             offset_y = int(i / int(256 / tile_size))
             offset_x = i - (offset_y * int(256 / tile_size))
             if debug:
-                print("Drawing ScreenGFX #"+str(i)+" (Offset: "+str(hex(i*2))+") x="+str(offset_x)+" y="+str(offset_y))
+                debug_print("Drawing ScreenGFX #"+str(i)+" (Offset: "+str(hex(i*2))+") x="+str(offset_x)+" y="+str(offset_y))
             tile_gfx = gfx.get_graphic(self.tile_set)
             for index, tile in enumerate(tile_gfx):
                 y = int(index / tile_size + offset_y * tile_size)
                 x = index - int(int(index / tile_size) * tile_size) + offset_x * tile_size
                 if debug:
-                    print(" - x="+str(x)+" y="+str(y)+" index="+str(index)+" i="+str(i)+" TileLength="+str(len(tile_gfx)))
+                    debug_print(" - x="+str(x)+" y="+str(y)+" index="+str(index)+" i="+str(i)+" TileLength="+str(len(tile_gfx)))
                 if (gfx.flip_x or gfx.flip_y) and debug_draw_flips:
                     # Debug: draw tiles with checker pattern to see which tiles have the flip_x and/or flip_y bit set
                     if gfx.flip_x and gfx.flip_y:
@@ -275,7 +276,7 @@ class MAP2D_TILES: # .nbfc
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            print("Module \"PIL\" not installed!")
+            debug_print("Module \"PIL\" not installed!")
             return None
 
         if self.pal == None:
@@ -319,25 +320,25 @@ class MAP2D:
         if ndspy:
             self.narc = ndspy.narc.NARC(ndspy.lz10.decompress(data))
         else:
-            print("Please install ndspy to use this feature! (https://github.com/RoadrunnerWMC/ndspy)")
+            debug_print("Please install ndspy to use this feature! (https://github.com/RoadrunnerWMC/ndspy)")
             return None
 
         try:
             self.palette = MAP2D_PAL(self.narc.getFileByName("map2d.nbfp"))
         except ValueError:
-            print("map2d.nbfp (Palette File) not found!")
+            debug_print("map2d.nbfp (Palette File) not found!")
             self.palette = False
 
         try:
             self.tiles = MAP2D_TILES(self.narc.getFileByName("map2d.nbfc"))
         except ValueError:
-            print("map2d.nbfc (Tiles File) not found!")
+            debug_print("map2d.nbfc (Tiles File) not found!")
             self.tiles = False
 
         try:
             self.screen = MAP2D_SCREEN(self.narc.getFileByName("map2d.nbfs"))
         except ValueError:
-            print("map2d.nbfs (Screen File) not found!")
+            debug_print("map2d.nbfs (Screen File) not found!")
             self.screen = False
 
         try:
@@ -354,7 +355,7 @@ class MAP2D:
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            print("Please install PIL to use this feature!")
+            debug_print("Please install PIL to use this feature!")
             return None
 
         if export_map2d and self.screen:
@@ -392,12 +393,12 @@ def dump_bitmap_all(input_path, output_path):
         for directory2 in directory:
             path = os.path.join(r, directory2)
             dirs.append(path)
-            print(path)
+            debug_print(path)
 
     for directory in dirs:
         for _r, _d, f in os.walk(directory):
             for file in f:
                 name = os.path.basename(os.path.normpath(directory))
-                print(directory+"/"+file + " -> " + name)
+                debug_print(directory+"/"+file + " -> " + name)
                 MAP2D(d.ReadFile(directory+"/"+file)).save_bitmap(outdir, name+"_"+file[:-4], path_tiles="tiles/", path_palette="palettes/")
 
