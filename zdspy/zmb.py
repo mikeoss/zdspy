@@ -126,8 +126,39 @@ class ZMB_WARP_CE:
 
         return buffer
 
+
+class ZMB_MPOB_CE:
+    mapobjectid: int = 0
+    position_x: int = 0
+    position_y: int = 0
+    rotation: int = 0
+
+    def __init__(self, data, num):
+        self.data = data
+        self.mapobjectid = d.UInt32(self.data, 0)
+        self.position_x = d.UInt8(self.data, 4)
+        self.position_y = d.UInt8(self.data, 5)
+
+        self.rotation = d.SInt16(self.data, 6)
+
+        debug_print("OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data[8:].hex()) + " [:"+str(num)+"] ")
+    
+    def __str__(self) -> str:
+        return "OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data.hex())
+
+    def save(self) -> bytearray:
+        buffer = self.data
+
+        buffer = d.w_UInt32(buffer, 0, self.mapobjectid)
+        buffer = d.w_UInt8(buffer, 4, self.position_x)
+        buffer = d.w_UInt8(buffer, 5, self.position_y)
+
+        return buffer
+
+
 class ZMB_MPOB(gh.ZDS_GenericElementHeader):
     calc_child_count: int = 0
+    children: list[ZMB_MPOB_CE] = []
 
     @property
     def child_size(self) -> int:
@@ -176,34 +207,6 @@ class ZMB_MPOB(gh.ZDS_GenericElementHeader):
 
         for child in self.children:
             buffer = buffer + child.save()
-
-        return buffer
-
-class ZMB_MPOB_CE:
-    mapobjectid: int = 0
-    position_x: int = 0
-    position_y: int = 0
-    rotation: int = 0
-
-    def __init__(self, data, num):
-        self.data = data
-        self.mapobjectid = d.UInt32(self.data, 0)
-        self.position_x = d.UInt8(self.data, 4)
-        self.position_y = d.UInt8(self.data, 5)
-
-        self.rotation = d.SInt16(self.data, 6)
-
-        debug_print("OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data[8:].hex()) + " [:"+str(num)+"] ")
-    
-    def __str__(self) -> str:
-        return "OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data.hex())
-
-    def save(self) -> bytearray:
-        buffer = self.data
-
-        buffer = d.w_UInt32(buffer, 0, self.mapobjectid)
-        buffer = d.w_UInt8(buffer, 4, self.position_x)
-        buffer = d.w_UInt8(buffer, 5, self.position_y)
 
         return buffer
 
