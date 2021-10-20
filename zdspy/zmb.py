@@ -288,16 +288,19 @@ class ZMB_NPCA_CE:
     position_y: float = 0.0
     position_z: int = 0
     rotation: int = 0
+    bmg_script_id: int = 0
 
     def __init__(self, data, num):
         self.data = data
         self.npctype = d.Decode(self.data[:4])
 
-        self.position_x = d.SFix(self.data, 4, n_bits=16, n_bits_int=12)
-        self.position_y = d.SFix(self.data, 6, n_bits=16, n_bits_int=12)
-        self.position_z = d.SInt16(self.data, 8)
+        self.position_x = d.SFix(self.data, 0x4, n_bits=16, n_bits_int=12)
+        self.position_y = d.SFix(self.data, 0x6, n_bits=16, n_bits_int=12)
+        self.position_z = d.SInt16(self.data, 0x8)
 
-        self.rotation = d.SInt16(self.data, 10)
+        self.rotation = d.SInt16(self.data, 0xA)
+
+        self.bmg_script_id = d.UInt32(self.data, 0x18)
 
         # debug_print(str(len(self.data)) + ": " + self.data.hex())
         if len(self.data) < 0x1C:
@@ -315,7 +318,7 @@ class ZMB_NPCA_CE:
         buffer = d.w_SFix(buffer, 6, self.position_y, n_bits=16, n_bits_int=12)
         buffer = d.w_SInt16(buffer, 8, self.position_z)
 
-        buffer = d.w_SInt16(buffer, 10, self.rotation)
+        buffer = d.w_SInt16(buffer, 0xA, self.rotation)
 
         buffer = d.w_UInt32(buffer, 0x18, self.bmg_script_id)
 
