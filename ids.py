@@ -48,7 +48,7 @@ OBJECT_IDS = {
     45: 'Crash if set directly (Undefined instruction)',
     46: 'Stone entrance',
     47: 'Crash if set directly (Undefined instruction)',
-    48: 'Crash if set directly (Undefined instruction)',
+    48: 'House door (used in mercay island left-most house)',
     49: 'Crash if set directly',
     50: 'Crash if set directly (Undefined instruction)',
     51: 'Crash if set directly (Undefined instruction)',
