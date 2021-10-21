@@ -66,7 +66,7 @@ class ZMB_WARP_CE:
     UID: int = 0
     fade_type: int = 0
     map_id: int = 0
-    destination_warp_id: int = 0
+    destination_warp_id: int = 0  # ASCII, right-padded with null bytes
     destination: int = 0
     run_direction: int = 0
 
