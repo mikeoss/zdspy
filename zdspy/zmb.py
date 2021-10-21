@@ -132,16 +132,23 @@ class ZMB_MPOB_CE:
     position_x: int = 0
     position_y: int = 0
     rotation: int = 0
+    item_id: int = 0
+    unknown1: int = 0
+    bmg_script_id: int = 0
+    unknown2: int = 0
+    padding: int = 0
 
     def __init__(self, data, num):
         self.data = data
-        self.mapobjectid = d.UInt32(self.data, 0)
-        self.position_x = d.UInt8(self.data, 4)
-        self.position_y = d.UInt8(self.data, 5)
-
-        self.rotation = d.SInt16(self.data, 6)
-
-        self.bmgscriptid = d.UInt32(self.data, 8)
+        self.mapobjectid = d.UInt32(self.data, 0x0)
+        self.position_x = d.UInt8(self.data, 0x4)
+        self.position_y = d.UInt8(self.data, 0x5)
+        self.rotation = d.SInt16(self.data, 0x6)
+        self.item_id = d.UInt32(self.data, 0x8)
+        self.unknown1 = d.UInt16(self.data, 0xC)
+        self.bmg_script_id = d.UInt32(self.data, 0xE)
+        self.unknown2 = d.UInt16(self.data, 0x12)
+        self.padding = d.UInt16(self.data, 0x14)
 
         debug_print("OBJID:"+str(self.mapobjectid) + " XPos:"+str(self.position_x)+ " YPos:"+str(self.position_y)+ " HEX:" + str(self.data[8:].hex()) + " [:"+str(num)+"] ")
     
@@ -151,11 +158,15 @@ class ZMB_MPOB_CE:
     def save(self) -> bytearray:
         buffer = self.data
 
-        buffer = d.w_UInt32(buffer, 0, self.mapobjectid)
-        buffer = d.w_UInt8(buffer, 4, self.position_x)
-        buffer = d.w_UInt8(buffer, 5, self.position_y)
-        buffer = d.w_SInt16(buffer, 6, self.rotation)
-        buffer = d.w_UInt32(buffer, 8, self.bmgscriptid)
+        buffer = d.w_UInt32(buffer, 0x0, self.mapobjectid)
+        buffer = d.w_UInt8(buffer, 0x4, self.position_x)
+        buffer = d.w_UInt8(buffer, 0x5, self.position_y)
+        buffer = d.w_SInt16(buffer, 0x6, self.rotation)
+        buffer = d.w_UInt32(buffer, 0x8, self.item_id)
+        buffer = d.w_UInt16(buffer, 0xC, self.unknown1)
+        buffer = d.w_UInt32(buffer, 0xE, self.bmg_script_id)
+        buffer = d.w_UInt16(buffer, 0x12, self.unknown2)
+        buffer = d.w_UInt16(buffer, 0x14, self.padding)
 
         return buffer
 
@@ -166,11 +177,11 @@ class ZMB_MPOB(gh.ZDS_GenericElementHeader):
 
     @property
     def child_size(self) -> int:
-        return 28
+        return 0x1C
 
     @property
     def header_size(self) -> int:
-        return 12
+        return 0xC
 
     def init(self):
         debug_print("Loading Section: " + self.identification)
