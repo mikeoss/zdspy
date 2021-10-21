@@ -299,7 +299,15 @@ class ZMB_NPCA_CE:
     position_y: float = 0.0
     position_z: int = 0
     rotation: int = 0
+    unknown1: int = 0 # Able to move/Path ID? [May actually be individual for every actor, as this, in
+                      # object SWOB defines how many switches have to be hit to activate the door)
+    unknown2: int = 0 # Something related to movement as well.
+    unknown3: int = 0
+    arab_id: int = 0
+    unknown4: int = 0 # changing this made the NPC disappear
+    unknown5: int = 0
     bmg_script_id: int = 0
+    unknown6: int = 0
 
     def __init__(self, data, num):
         self.data = data
@@ -308,10 +316,15 @@ class ZMB_NPCA_CE:
         self.position_x = d.SFix(self.data, 0x4, n_bits=16, n_bits_int=12)
         self.position_y = d.SFix(self.data, 0x6, n_bits=16, n_bits_int=12)
         self.position_z = d.SInt16(self.data, 0x8)
-
         self.rotation = d.SInt16(self.data, 0xA)
-
+        self.unknown1 = d.UInt8(self.data, 0xC)
+        self.unknown2 = d.UInt8(self.data, 0xD)
+        self.unknown3 = d.UInt32(self.data, 0xE)
+        self.arab_id = d.UInt16(self.data, 0x12)
+        self.unknown4 = d.UInt16(self.data, 0x14)
+        self.unknown5 = d.UInt16(self.data, 0x16)
         self.bmg_script_id = d.UInt32(self.data, 0x18)
+        self.unknown6 = d.UInt32(self.data, 0x1C)
 
         # debug_print(str(len(self.data)) + ": " + self.data.hex())
         if len(self.data) < 0x1C:
@@ -325,13 +338,18 @@ class ZMB_NPCA_CE:
         buffer = bytearray(self.data)
 
         buffer[:4] = d.Encode(self.npctype)
-        buffer = d.w_SFix(buffer, 4, self.position_x, n_bits=16, n_bits_int=12)
-        buffer = d.w_SFix(buffer, 6, self.position_y, n_bits=16, n_bits_int=12)
-        buffer = d.w_SInt16(buffer, 8, self.position_z)
-
+        buffer = d.w_SFix(buffer, 0x4, self.position_x, n_bits=16, n_bits_int=12)
+        buffer = d.w_SFix(buffer, 0x6, self.position_y, n_bits=16, n_bits_int=12)
+        buffer = d.w_SInt16(buffer, 0x8, self.position_z)
         buffer = d.w_SInt16(buffer, 0xA, self.rotation)
-
+        buffer = d.w_UInt8(buffer, 0xC, self.unknown1)
+        buffer = d.w_UInt8(buffer, 0xD, self.unknown2)
+        buffer = d.w_UInt32(buffer, 0xE, self.unknown3)
+        buffer = d.w_UInt16(buffer, 0x12, self.arab_id)
+        buffer = d.w_UInt16(buffer, 0x14, self.unknown4)
+        buffer = d.w_UInt16(buffer, 0x16, self.unknown5)
         buffer = d.w_UInt32(buffer, 0x18, self.bmg_script_id)
+        buffer = d.w_UInt32(buffer, 0x1C, self.unknown6)
 
         return buffer
 
