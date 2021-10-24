@@ -224,7 +224,7 @@ ITEM_IDS = {
     116: 'Aquanine',
     117: 'Red Potion',
     118: 'Purple Potion',
-    119: 'Big Red Rupee (200)',
+    119: 'Yellow Potion',
     120: 'Sand of Hours (One Minute)',
     121: 'Golden Chimney #TODO Check if golden chimney everytime',
     122: 'Golden Handrail',
