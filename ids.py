@@ -1,6 +1,6 @@
 # Tested with OBJID:10 XPos:38 YPos:33 HEX:00000100000000000000010100000000000000010000 [:26]  (dngn_flame_00.zmb) (Contains Key)
 OBJECT_IDS = {
-    0: 'Crash if set directly (Undefined instruction)',
+    0: 'Tree',
     1: 'Crash if set directly (Undefined instruction)',
     2: 'Stone',
     3: 'Pot with green rupee? inside',
@@ -267,4 +267,18 @@ ITEM_IDS = {
     159: 'Key (No TB)',
     # TODO continue to 254
     255: 'Key (No TB)',
+}
+
+# IDs for items that drop when rolling into a tree
+TREE_DROP_ITEMS = {
+    0x0: 'Nothing',
+    0x1: 'Three (3) hearts',
+    0x2: 'Beehive',
+    0x3: 'Big Red Rupee (200)',
+    0x4: 'Bomb (set to explode, not pickup)',
+    0x5: 'Nothing (???)',
+    0x6: 'Big Green Rupee (100)',
+    0x7: 'Red Rupee (20)',
+    0x8: 'Nothing (???)',
+    0x9: 'Nothing (???)'
 }
