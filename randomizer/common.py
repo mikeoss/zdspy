@@ -46,7 +46,7 @@ class BMG_Location(Location):
 
 
 class ZMB_MPOB_Location(Location):
-    # maps ZMB objects to filenames
+    # maps filenames objects to ZMB objects
     _zmb_filename_mapping: dict[zmb.ZMB, str] = {}
 
     # maps NARC file objects to filenames
@@ -61,7 +61,7 @@ class ZMB_MPOB_Location(Location):
         self.zmb_file = None
 
         # check if this zmb file is already open first
-        for zmb_file, filename in ZMB_MPOB_Location._zmb_filename_mapping.items():
+        for filename, zmb_file in ZMB_MPOB_Location._zmb_filename_mapping.items():
             if filename == self._zmb_filepath:
                 self.zmb_file = zmb_file
 
@@ -73,7 +73,7 @@ class ZMB_MPOB_Location(Location):
                 ] = self._narc_filepath
                 self.zmb_file = zmb.ZMB(narc_file.getFileByName(self._zmb_filepath))
                 ZMB_MPOB_Location._narc_to_zmb_mapping[narc_file].append(self._zmb_filepath)
-                ZMB_MPOB_Location._zmb_filename_mapping[self.zmb_file] = self._zmb_filepath
+                ZMB_MPOB_Location._zmb_filename_mapping[self._zmb_filepath] = self.zmb_file
 
     def set_location(self, value: int):
         zmb_child_element: zmb.ZMB_MPOB_CE = self.zmb_file.get_child('MPOB').children[self.child_index]
@@ -101,8 +101,10 @@ class ZMB_MPOB_Location(Location):
     @classmethod
     def save_all(cls):
         for narc_file, zmb_filenames in ZMB_MPOB_Location._narc_to_zmb_mapping.items():
+            print(zmb_filenames)
             for zmb_filename in zmb_filenames:
                 print(zmb_filename)
+                print(ZMB_MPOB_Location._zmb_filename_mapping)
                 narc_file.setFileByName(
                     zmb_filename,
                     ZMB_MPOB_Location._zmb_filename_mapping[zmb_filename].save(),
