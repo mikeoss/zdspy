@@ -230,7 +230,7 @@ ITEM_IDS = {
     122: 'Golden Handrail',
     123: 'Golden Cannon',
     124: 'Golden Hull',
-    125: 'Ruto Crown',
+    125: 'Treasure (Random)',
     126: 'Ship Part (Random) #TODO check if same everytime',
     127: 'Stone Tablet / Slate',
     128: 'Bait (No TB)',
