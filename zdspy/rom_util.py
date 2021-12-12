@@ -1,8 +1,10 @@
-import os
-import ndspy.rom
 import hashlib
+import os
+
+import ndspy.rom
 
 from .helpers import debug_print
+
 
 def extract(rom_path, e_path, confirm=True, debug_log=True):
     rom = ndspy.rom.NintendoDSRom.fromFile(rom_path)
@@ -23,7 +25,7 @@ def extract(rom_path, e_path, confirm=True, debug_log=True):
             # debug_print(rom_internal_file_name)
 
             path_wf = output + rom_internal_file_name
-            path = path_wf[:len(path_wf)-len(os.path.basename(path_wf))]
+            path = path_wf[: len(path_wf) - len(os.path.basename(path_wf))]
 
             # debug_print(path_wf)
             # debug_print(path)
@@ -47,6 +49,7 @@ def extract(rom_path, e_path, confirm=True, debug_log=True):
             if debug_log:
                 debug_print("[Ignored] ID " + str(i) + " has no filename!")
 
+
 # if only_modified is set to True, both files will be hashed and only replaced if the hashes differ!
 def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debug_log=True):
     # Re-inserts files!
@@ -55,7 +58,15 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
         debug_print(rom)
 
     if confirm:
-        inp = input("Insert ROM Contents from \"" + os.path.abspath(i_path) + "\" into \"" + os.path.abspath(rom_path) + "\" and save to file \"" + os.path.abspath(save_path) + "\"? [y/n]")
+        inp = input(
+            "Insert ROM Contents from \""
+            + os.path.abspath(i_path)
+            + "\" into \""
+            + os.path.abspath(rom_path)
+            + "\" and save to file \""
+            + os.path.abspath(save_path)
+            + "\"? [y/n]"
+        )
         if inp != "y":
             debug_print("Insertion cancelled!")
             return
@@ -63,11 +74,11 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
     for i, file in enumerate(rom.files):
         try:
             rom_internal_file_name = rom.filenames[i]
-            #print(rom_internal_file_name)
+            # print(rom_internal_file_name)
 
             path_wf = i_path + rom_internal_file_name
 
-            #print(path_wf)
+            # print(path_wf)
 
             if os.path.isfile(path_wf):
                 with open(path_wf, 'rb') as f:
@@ -81,17 +92,19 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
                             # Replace File!
                             rom.setFileByName(rom_internal_file_name, bin_file)
                             if debug_log:
-                                debug_print("[Inserted] " + rom_internal_file_name + " <- " + path_wf)
+                                debug_print(
+                                    "[Inserted] " + rom_internal_file_name + " <- " + path_wf
+                                )
                         else:
                             pass
-                            #print("File hasn't been modified!")
+                            # print("File hasn't been modified!")
                     else:
                         rom.setFileByName(rom_internal_file_name, bin_file)
                         if debug_log:
                             debug_print("[Inserted] " + rom_internal_file_name + " <- " + path_wf)
             else:
                 pass
-                #print("File skipped - File doesn't exist!")
+                # print("File skipped - File doesn't exist!")
 
         except KeyError:
             if debug_log:
@@ -104,6 +117,9 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
     if debug_log:
         debug_print("Done!")
 
+
 if __name__ == "__main__":
     # extract("../../DS/zph.nds" , "../out/", confirm=False)
-    replace("../../DS/zph.nds" , "../../DS/randomize/data/", "../zph_mod.nds", confirm=False) # , confirm=False
+    replace(
+        "../../DS/zph.nds", "../../DS/randomize/data/", "../zph_mod.nds", confirm=False
+    )  # , confirm=False

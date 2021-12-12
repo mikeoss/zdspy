@@ -3,6 +3,7 @@ from collections import defaultdict
 import struct
 
 from ndspy import lz10, narc
+
 from ..zdspy import bmg, zmb
 
 # TODO: maybe move these out of zdspy and into their own module?
@@ -68,15 +69,15 @@ class ZMB_MPOB_Location(Location):
         if self.zmb_file is None:
             with open(self._narc_filepath, "rb") as narc_fd:
                 narc_file = narc.NARC(lz10.decompress(narc_fd.read()))
-                ZMB_MPOB_Location._narc_filename_mapping[
-                    narc_file
-                ] = self._narc_filepath
+                ZMB_MPOB_Location._narc_filename_mapping[narc_file] = self._narc_filepath
                 self.zmb_file = zmb.ZMB(narc_file.getFileByName(self._zmb_filepath))
                 ZMB_MPOB_Location._narc_to_zmb_mapping[narc_file].append(self._zmb_filepath)
                 ZMB_MPOB_Location._zmb_filename_mapping[self._zmb_filepath] = self.zmb_file
 
     def set_location(self, value: int):
-        zmb_child_element: zmb.ZMB_MPOB_CE = self.zmb_file.get_child('MPOB').children[self.child_index]
+        zmb_child_element: zmb.ZMB_MPOB_CE = self.zmb_file.get_child('MPOB').children[
+            self.child_index
+        ]
         zmb_child_element.item_id = value
         ZMB_MPOB_Location._zmb_filename_mapping[self._zmb_filepath] = self.zmb_file
 

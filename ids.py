@@ -280,5 +280,5 @@ TREE_DROP_ITEMS = {
     0x6: 'Big Green Rupee (100)',
     0x7: 'Red Rupee (20)',
     0x8: 'Nothing (???)',
-    0x9: 'Nothing (???)'
+    0x9: 'Nothing (???)',
 }

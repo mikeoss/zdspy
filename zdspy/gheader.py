@@ -1,9 +1,8 @@
-
-
-
 from abc import ABC, abstractmethod, abstractproperty
+
 from . import dataio as d
 from .helpers import debug_print
+
 
 class IByteOrderMark:
     BYTE_ORDER_MARK_BIG_ENDIAN: str = "feff"
@@ -15,6 +14,7 @@ class IByteOrderMark:
 
     def is_little_endian(self) -> bool:
         return not is_big_endian()
+
 
 class ZDS_GenericElementHeaderIDO(ABC):
     data: bytearray
@@ -33,6 +33,7 @@ class ZDS_GenericElementHeaderIDO(ABC):
     @abstractproperty
     def header_size(self) -> int:
         return 4
+
 
 class ZDS_GenericElementHeaderRaw(ABC):
     data: bytearray
@@ -54,6 +55,7 @@ class ZDS_GenericElementHeaderRaw(ABC):
     def header_size(self) -> int:
         return 8
 
+
 class ZDS_GenericElementHeaderRawNR(ABC):
     data: bytearray
     identification: str
@@ -74,6 +76,7 @@ class ZDS_GenericElementHeaderRawNR(ABC):
     def header_size(self) -> int:
         return 8
 
+
 class ZDS_GenericElementHeader(ABC):
     data: bytearray
     identification: str
@@ -93,7 +96,7 @@ class ZDS_GenericElementHeader(ABC):
         self.padding = d.UInt16(data, 10)
         self.offset = self.header_size
         if not self.padding == 65535:
-            debug_print("Padding with NON 0xFFFF Value: "+str(self.padding))
+            debug_print("Padding with NON 0xFFFF Value: " + str(self.padding))
         self.init()
 
     @abstractmethod
@@ -104,7 +107,8 @@ class ZDS_GenericElementHeader(ABC):
     def header_size(self) -> int:
         return 12
 
-class ZDS_GenericFileHeader(ABC, IByteOrderMark): # TODO
+
+class ZDS_GenericFileHeader(ABC, IByteOrderMark):  # TODO
     data: bytearray
     identification: str
     size: int = 0
@@ -119,14 +123,14 @@ class ZDS_GenericFileHeader(ABC, IByteOrderMark): # TODO
         self.identification = data[:4].decode()
         # debug_print("Loading Element: " + self.identification)
         self.byte_order_mark_string = str(data[4:6].hex())
-        if self.byte_order_mark_string == "feff": # FEFF
+        if self.byte_order_mark_string == "feff":  # FEFF
             debug_print("Big Endian")
-        elif self.byte_order_mark_string == "fffe": # FFFE
+        elif self.byte_order_mark_string == "fffe":  # FFFE
             debug_print("Little Endian")
         else:
             debug_print("BOM is wrong!")
         self.unknwn1 = d.UInt16(data, 6)
-        debug_print("Unknwn1 (0x06): "+str(self.unknwn1))
+        debug_print("Unknwn1 (0x06): " + str(self.unknwn1))
         self.children = []
         self.size = d.UInt32(data, 8)
 
@@ -151,18 +155,20 @@ class ZDS_GenericFileHeader(ABC, IByteOrderMark): # TODO
     def set_header_size(self, value: int):
         self._header_size = value
 
+
 # Programm Related:
 class NDS_GenericTempContainer(ZDS_GenericElementHeaderRaw):
     def init(self):
-        self.size2 = d.UInt32(self.data, 8) # Might be unused in some cases.
+        self.size2 = d.UInt32(self.data, 8)  # Might be unused in some cases.
 
     @property
     def header_size(self) -> int:
         return 20
 
+
 class NDS_GenericTempContainerNR(ZDS_GenericElementHeaderRawNR):
     def init(self):
-        self.size2 = d.UInt32(self.data, 8) # Might be unused in some cases.
+        self.size2 = d.UInt32(self.data, 8)  # Might be unused in some cases.
 
     @property
     def header_size(self) -> int:

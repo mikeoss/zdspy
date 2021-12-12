@@ -1,5 +1,4 @@
-from zdspy import zmb
-from zdspy import dataio as d
+from zdspy import dataio as d, zmb
 
 og_file = d.ReadFile("./isle_main_00.zmb")
 

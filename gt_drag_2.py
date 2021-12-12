@@ -1,8 +1,10 @@
 # gt_drag_2.py
-import random
 import os
+import random
+
 import pyglet
 from pyglet.gl import *
+
 from getinfo import ZDS_PH_MAP
 from zdspy import zmb as zzmb
 
@@ -16,19 +18,22 @@ tx = 0
 ty = 0
 
 frame = 0
+
+
 def update_frame(x, y):
     global frame
     frame += 1
 
 
 class Color:
-    def __init__(self,r,g,b):
+    def __init__(self, r, g, b):
         self.r = r
         self.g = g
         self.b = b
 
+
 class Line:
-    def __init__(self,x,y,ex,ey):
+    def __init__(self, x, y, ex, ey):
         self.x = x
         self.y = y
         self.ex = ex
@@ -36,22 +41,23 @@ class Line:
         self.color = None
         self.vc1 = None
         self.vc2 = None
-    
-    def computeTranslation(self,x,y):
+
+    def computeTranslation(self, x, y):
         self.cx = self.x + x
         self.cy = self.y + y
         self.cex = self.ex + x
         self.cey = self.ey + y
 
+
 class Quad:
-    def __init__(self,x,y,sx,sy):
+    def __init__(self, x, y, sx, sy):
         self.x = x
         self.y = y
         self.sx = sx
         self.sy = sy
         self.color = None
-    
-    def computeTranslation(self,x,y):
+
+    def computeTranslation(self, x, y):
         self.ctlx = self.x + x
         self.ctly = self.y + y
 
@@ -64,21 +70,22 @@ class Quad:
         self.cblx = self.ctlx
         self.cbly = self.cbry
 
+
 class EQuad:
-    def __init__(self,x,y,sx,sy):
+    def __init__(self, x, y, sx, sy):
         self.x = x
         self.y = y
         self.sx = sx
         self.sy = sy
         self.color = None
-    
+
     @classmethod
     def fromABounds(self, ab):
-        tmp = self(ab.x,ab.y,ab.w,ab.h)
-        tmp.color = Color(1,0,1)
+        tmp = self(ab.x, ab.y, ab.w, ab.h)
+        tmp.color = Color(1, 0, 1)
         return tmp
 
-    def computeTranslation(self,x,y):
+    def computeTranslation(self, x, y):
         self.ctlx = self.x + x
         self.ctly = self.y + y
 
@@ -99,33 +106,31 @@ class Label:
         self.y = label.y
         self.color = None
 
-    def computeTranslation(self,x,y):
+    def computeTranslation(self, x, y):
         self.label.x = self.x + x
         self.label.y = self.y + y
 
     def draw(self):
         self.label.draw()
 
+
 class GMap:
-    def __init__(self, mapname,x,y):
+    def __init__(self, mapname, x, y):
         self.name = mapname
         self.levelname = mapname[:-3]
         self.x = x
         self.y = y
         self.size = len(mapname) * 10
-        self.equad = EQuad(x,y, self.size, 20)
-        self.fontColor = Color(1,1,1)
+        self.equad = EQuad(x, y, self.size, 20)
+        self.fontColor = Color(1, 1, 1)
         self.num_warps = 0
         self.connections = {}
         self.id = 0
-        self.label = pyglet.text.Label(self.name + " 0",
-                          font_name='Arial',
-                          font_size=12,
-                          x=x, y=y)
+        self.label = pyglet.text.Label(self.name + " 0", font_name='Arial', font_size=12, x=x, y=y)
         self.color = None
         self.lines = []
 
-    def setPos(self,x,y):
+    def setPos(self, x, y):
         self.x = x
         self.y = y
         self.equad.x = x
@@ -139,7 +144,7 @@ class GMap:
             else:
                 self.connections[remoteLevel].append(remoteMap)
         except KeyError:
-            self.connections[remoteLevel] = [remoteMap] # lol
+            self.connections[remoteLevel] = [remoteMap]  # lol
 
     def resLabelText(self):
         self.label.text = self.name + " " + self.num_warps
@@ -154,11 +159,11 @@ class GMap:
             for m in rMaps:
                 if m.levelname == self.levelname:
                     # print("Neat:",self.name)
-                    l = Line(self.x+1+self.id*5,self.y,m.x+1+self.id*5,m.y)
+                    l = Line(self.x + 1 + self.id * 5, self.y, m.x + 1 + self.id * 5, m.y)
                     if self.id % 2 == 0:
-                        l.color = Color(0.5,0.9,0.9)
+                        l.color = Color(0.5, 0.9, 0.9)
                     else:
-                        l.color = Color(0.9,0.9,0.5)
+                        l.color = Color(0.9, 0.9, 0.5)
                     drawLine(l, 0.25)
                 else:
                     twoway = False
@@ -169,12 +174,12 @@ class GMap:
                             # print("Neat: ",self.levelname, rLvl.name)
                             for mp in rmp:
                                 if mp.name == self.name:
-                                    print("Twoway enabled:",self.levelname,rl.name)
+                                    print("Twoway enabled:", self.levelname, rl.name)
                                     twoway = True
                                     break
                     # except AttributeError:
                     #     pass
-                    l = Line(self.x,self.y,m.x,m.y)
+                    l = Line(self.x, self.y, m.x, m.y)
 
                     # if "isle_" in self.levelname:
                     #     l.vc1 = Color(0.2,1,0.2)
@@ -186,42 +191,54 @@ class GMap:
                     # if "sea" in rLvl.name:
                     #     l.vc2 = Color(0.2,0.2,1)
                     if not twoway:
-                        l.vc1 = Color(0.2,1,0.2)
-                        l.vc2 = Color(1,0.2,0.2)
+                        l.vc1 = Color(0.2, 1, 0.2)
+                        l.vc2 = Color(1, 0.2, 0.2)
                     else:
-                        l.color = Color(0.2,0.2,1)
+                        l.color = Color(0.2, 0.2, 1)
 
                     drawLine(l, 0.25)
 
     def drawEQuad(self):
         drawEQuad(self.equad, 0.25)
 
-    def computeTranslation(self,x,y):
+    def computeTranslation(self, x, y):
         self.label.x = self.x + 3 + x
         self.label.y = self.y + 3 + y
-    
+
     def drawLabel(self):
         glColor3f(self.fontColor.r, self.fontColor.g, self.fontColor.b)
         self.label.draw()
 
+
 class ABounds:
-    def __init__(self,x,y,w,h):
+    def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
 
     def insideX(self, x, w):
-        return (self.x > x > self.x + self.w) or (self.x > x + w > self.x + self.w) or (self.x < x < self.x + self.w) or (self.x < x + w < self.x + self.w)
+        return (
+            (self.x > x > self.x + self.w)
+            or (self.x > x + w > self.x + self.w)
+            or (self.x < x < self.x + self.w)
+            or (self.x < x + w < self.x + self.w)
+        )
 
     def insideY(self, y, h):
-        return (self.y > y > self.y + self.h) or (self.y > y + h > self.y + self.h) or (self.y < y < self.y + self.h) or (self.y < y + h < self.y + self.h)
+        return (
+            (self.y > y > self.y + self.h)
+            or (self.y > y + h > self.y + self.h)
+            or (self.y < y < self.y + self.h)
+            or (self.y < y + h < self.y + self.h)
+        )
 
     def isObstructing(self, ab):
-        return self.insideX(ab.x, ab.w) and self.insideY(ab.y,ab.h)
+        return self.insideX(ab.x, ab.w) and self.insideY(ab.y, ab.h)
+
 
 class GLevel:
-    def __init__(self, levelname,x,y):
+    def __init__(self, levelname, x, y):
         self.name = levelname
         self.x = x
         self.y = y
@@ -229,15 +246,12 @@ class GLevel:
         self.color = None
         self.size = 30
         self.height = 50
-        self.quad = Quad(x,y,20,50)
-        self.quad.color = Color(0.1,0.1,0.1)
-        self._col = Color(0.1,0.1,0.1)
+        self.quad = Quad(x, y, 20, 50)
+        self.quad.color = Color(0.1, 0.1, 0.1)
+        self._col = Color(0.1, 0.1, 0.1)
         self.selected = False
-        self.label = pyglet.text.Label(self.name,
-                          font_name='Arial',
-                          font_size=12,
-                          x=x + 30, y=y)
-    
+        self.label = pyglet.text.Label(self.name, font_name='Arial', font_size=12, x=x + 30, y=y)
+
     def setX(self, x):
         oldx = self.x
         self.x = x
@@ -276,7 +290,7 @@ class GLevel:
 
     def select(self, bo, col, force=False):
         if bo:
-            #select
+            # select
             if self.selected == False or force:
                 self._col = self.quad.color
                 self.quad.color = col
@@ -285,10 +299,10 @@ class GLevel:
             if self.selected or force:
                 self.quad.color = self._col
                 self.selected = False
-            #deselect
+            # deselect
 
     def addMap(self, mapname):
-        nmap = GMap(mapname,self.x,self.y + len(self.maps)*30)
+        nmap = GMap(mapname, self.x, self.y + len(self.maps) * 30)
         nmap.id = len(self.maps)
         self.maps.append(nmap)
         self.computeSize()
@@ -304,23 +318,22 @@ class GLevel:
     def drawLabels(self):
         for m in self.maps:
             m.drawLabel()
-        
+
         self.label.draw()
 
     def getAreaBounds(self):
-        return ABounds(self.x-5, self.y-5, self.size + 10, self.height + 10)
+        return ABounds(self.x - 5, self.y - 5, self.size + 10, self.height + 10)
 
-    def computeTranslation(self,x,y):
+    def computeTranslation(self, x, y):
         self.cx = self.x + x
         self.cy = self.y + y
         self.label.x = self.cx + 3
-        self.label.y = self.y + len(self.maps)*30 + 5 + y
+        self.label.y = self.y + len(self.maps) * 30 + 5 + y
         for m in self.maps:
-            m.computeTranslation(x,y)
+            m.computeTranslation(x, y)
 
     def drawQuad(self):
         drawQuad(self.quad, -0.25)
-
 
 
 lines = []
@@ -332,7 +345,7 @@ mapl = []
 
 # mapl.append(GMap("TestLevel",0,0))
 
-lvl = GLevel("dngn_main",100, 100)
+lvl = GLevel("dngn_main", 100, 100)
 lvl.addMap("dngn_main_00")
 lvl.addMap("dngn_main_01")
 lvl.addMap("dngn_main_02")
@@ -363,59 +376,63 @@ down = 1
 
 levellist = []
 
+
 def levelExists(lname):
     for lvl in levellist:
         if lvl.name == lname:
             return lvl
     return None
 
+
 random.seed(406)
 
 direction = 0
+
+
 def addLevel(glevel):
     # 0 1 2 3
-    global left,right,up,down,levellist,direction
+    global left, right, up, down, levellist, direction
 
     if "sea" in glevel.name:
-        glevel.quad.color = Color(0,0,0.2)
+        glevel.quad.color = Color(0, 0, 0.2)
     elif "isle_" in glevel.name:
-        glevel.quad.color = Color(0.1,0.2,0.1)
+        glevel.quad.color = Color(0.1, 0.2, 0.1)
     elif "battle" in glevel.name:
-        glevel.quad.color = Color(0.02,0.02,0.02)
+        glevel.quad.color = Color(0.02, 0.02, 0.02)
     elif "ship" in glevel.name:
-        glevel.quad.color = Color(0.2,0.2,0)
+        glevel.quad.color = Color(0.2, 0.2, 0)
     elif "boss" in glevel.name:
-        glevel.quad.color = Color(0.2,0,0)
+        glevel.quad.color = Color(0.2, 0, 0)
     elif "demo" in glevel.name:
-        glevel.quad.color = Color(0.15,0.3,0.3)
+        glevel.quad.color = Color(0.15, 0.3, 0.3)
 
     again = True
-    
+
     while again:
         again = False
         for lvl in levellist:
             # direction = random.randint(0,4)
             if lvl.getAreaBounds().isObstructing(ABounds(glevel.x, glevel.y, 100, 100)):
-                print(lvl.name, "obstructing",glevel.name, direction)
+                print(lvl.name, "obstructing", glevel.name, direction)
                 if direction == 0:
-                    #left
+                    # left
                     glevel.setX(glevel.x - 200 * left)
                     glevel.setY(glevel.y + 10 * left * left / 2)
                     left += 1
                     direction += 1
                 elif direction == 1:
-                    #Right
+                    # Right
                     glevel.setX(glevel.x + 200 * right)
                     glevel.setY(glevel.y + 10 * right * right / 2)
                     right += 1
-                    direction = 0 # += 1
+                    direction = 0  # += 1
                 elif direction == 2:
-                    #Up
+                    # Up
                     glevel.setY(glevel.y + 200 * up)
                     up += 1
                     direction += 1
                 elif direction == 3:
-                    #down
+                    # down
                     glevel.setY(glevel.y - 200 * down)
                     down += 1
                     direction = 0
@@ -424,12 +441,14 @@ def addLevel(glevel):
 
     levellist.append(glevel)
 
+
 def getLevelByName(name):
     global levellist
     for lvl in levellist:
         if lvl.name == name:
             return lvl
     return None
+
 
 ##########################################################################################################################################################
 ##########################################################################################################################################################
@@ -441,7 +460,26 @@ def getLevelByName(name):
 workdir = "../../DS/randomize/data/Map/"
 
 enableBanlist = True
-banlist = ["battle00","battle01","battle02","battle03","battle04","battle05","battle06","battle07","battle08","battle09","battle10","battle11","player_dngn","demo_op","demo_chase","demo_end","demo_title","isle_first"]
+banlist = [
+    "battle00",
+    "battle01",
+    "battle02",
+    "battle03",
+    "battle04",
+    "battle05",
+    "battle06",
+    "battle07",
+    "battle08",
+    "battle09",
+    "battle10",
+    "battle11",
+    "player_dngn",
+    "demo_op",
+    "demo_chase",
+    "demo_end",
+    "demo_title",
+    "isle_first",
+]
 
 banlist.append("isle_ice")
 
@@ -457,7 +495,7 @@ mapl = []
 print("Loading maps...")
 
 for d in dirs:
-    mapl.append( ZDS_PH_MAP( d, p=False ) )
+    mapl.append(ZDS_PH_MAP(d, p=False))
 
 zmbl = {}
 
@@ -473,15 +511,14 @@ for mp in mapl:
         iden = c.getID()
         filename = "zmb/" + mp_name + "_" + iden + ".zmb"
         print(filename)
-        zmb = zzmb.ZMB( c.getData().getFileByName(filename) )
+        zmb = zzmb.ZMB(c.getData().getFileByName(filename))
         zmbl[filename] = zmb
         warph = zmb.get_child("WARP")
         if not (warph == None):
             warpcountl[filename] = len(warph.children)
             for i, wrp in enumerate(warph.children):
                 print(wrp)
-                warpl[filename+str(i)] = wrp
-
+                warpl[filename + str(i)] = wrp
 
 
 for m, w in warpl.items():
@@ -493,10 +530,10 @@ for m, w in warpl.items():
         if not lvl.hasMap(str(mapname)):
             lvl.addMap(str(mapname))
     else:
-        lvl = GLevel(str(levelname),100,100)
+        lvl = GLevel(str(levelname), 100, 100)
         lvl.addMap(str(mapname))
         addLevel(lvl)
-        
+
     print()
     print(levelname + ": " + mapname)
     print(m.split(".zmb")[1] + ": " + m.split(".zmb")[0] + ": " + str(w))
@@ -509,7 +546,7 @@ for m, w in warpl.items():
     for lvl in levellist:
         # find remote map
         for ma in lvl.maps:
-            
+
             if ma.name == w.cleanDestination() + "_" + f'{w.map_id:02}':
                 rlvl = lvl
                 rmap = ma
@@ -531,8 +568,6 @@ for m, w in warpl.items():
 ##########################################################################################################################################################
 ##########################################################################################################################################################
 ##########################################################################################################################################################
-
-
 
 
 # addLevel(lvl)
@@ -559,19 +594,21 @@ for m, w in warpl.items():
 
 window = pyglet.window.Window(resizable=True)
 
-dbga = [None,None,None]
+dbga = [None, None, None]
 
 sticky = None
 selected = None
 
 qz = -0.25
 
-def touchingLevel(lvl,x,y):
-    global tx,ty
-    return lvl.getAreaBounds().isObstructing(ABounds(x,y,5,5))
+
+def touchingLevel(lvl, x, y):
+    global tx, ty
+    return lvl.getAreaBounds().isObstructing(ABounds(x, y, 5, 5))
+
 
 def move(x, y, dx, dy):
-    global tx,ty, dbga, sticky
+    global tx, ty, dbga, sticky
     x = x - tx
     y = y - ty
     # print(x,y)
@@ -583,7 +620,7 @@ def move(x, y, dx, dy):
     else:
         for lvl in levellist:
             # lvl.computeTranslation(tx,ty)
-            if touchingLevel(lvl,x,y):
+            if touchingLevel(lvl, x, y):
                 # dbga[0] = EQuad.fromABounds(ABounds(x,y,5,5))
                 ox = lvl.x - x
                 oy = lvl.y - y
@@ -596,66 +633,70 @@ def move(x, y, dx, dy):
                 break
 
 
-
 def drawLine(line, z):
-    line.computeTranslation(tx,ty)
+    line.computeTranslation(tx, ty)
     if not (line.color == None):
         glColor3f(line.color.r, line.color.g, line.color.b)
     else:
         glColor3f(1.0, 1.0, 1.0)
     if not (line.vc1 == None):
         glColor3f(line.vc1.r, line.vc1.g, line.vc1.b)
-    glVertex3f(line.cx,line.cy, z)
+    glVertex3f(line.cx, line.cy, z)
     if not (line.vc2 == None):
         glColor3f(line.vc2.r, line.vc2.g, line.vc2.b)
-    glVertex3f(line.cex,line.cey, z)
+    glVertex3f(line.cex, line.cey, z)
 
-def drawLineRaw(x,y,ex,ey,z):
-    glVertex3f(x,y, z)
-    glVertex3f(ex,ey, z)
+
+def drawLineRaw(x, y, ex, ey, z):
+    glVertex3f(x, y, z)
+    glVertex3f(ex, ey, z)
+
 
 def drawQuad(quad, qz):
-    global tx,ty
+    global tx, ty
     if not (quad.color == None):
         glColor3f(quad.color.r, quad.color.g, quad.color.b)
     else:
         glColor3f(1.0, 1.0, 1.0)
-    quad.computeTranslation(tx,ty)
-    glVertex3f(quad.ctlx,quad.ctly, qz) # Top Left
-    glVertex3f(quad.ctrx,quad.ctry, qz) # Top Right
-    glVertex3f(quad.cbrx,quad.cbry, qz) # Bottom Right
-    glVertex3f(quad.cblx,quad.cbly, qz) # Bottom Left
+    quad.computeTranslation(tx, ty)
+    glVertex3f(quad.ctlx, quad.ctly, qz)  # Top Left
+    glVertex3f(quad.ctrx, quad.ctry, qz)  # Top Right
+    glVertex3f(quad.cbrx, quad.cbry, qz)  # Bottom Right
+    glVertex3f(quad.cblx, quad.cbly, qz)  # Bottom Left
+
 
 def drawEQuad(equad, eqz):
-    global tx,ty
+    global tx, ty
     if not (equad.color == None):
         glColor3f(equad.color.r, equad.color.g, equad.color.b)
     else:
         glColor3f(1.0, 1.0, 1.0)
-    equad.computeTranslation(tx,ty)
-    glVertex3f(equad.ctlx,equad.ctly, eqz) # Top Left
-    glVertex3f(equad.ctrx,equad.ctry, eqz) # Top Right
+    equad.computeTranslation(tx, ty)
+    glVertex3f(equad.ctlx, equad.ctly, eqz)  # Top Left
+    glVertex3f(equad.ctrx, equad.ctry, eqz)  # Top Right
 
-    glVertex3f(equad.ctrx,equad.ctry, eqz) # Top Right
-    glVertex3f(equad.cbrx,equad.cbry, eqz) # Bottom Right
+    glVertex3f(equad.ctrx, equad.ctry, eqz)  # Top Right
+    glVertex3f(equad.cbrx, equad.cbry, eqz)  # Bottom Right
 
-    glVertex3f(equad.cbrx,equad.cbry, eqz) # Bottom Right
-    glVertex3f(equad.cblx,equad.cbly, eqz) # Bottom Left
+    glVertex3f(equad.cbrx, equad.cbry, eqz)  # Bottom Right
+    glVertex3f(equad.cblx, equad.cbly, eqz)  # Bottom Left
 
-    glVertex3f(equad.cblx,equad.cbly, eqz) # Bottom Left
-    glVertex3f(equad.ctlx,equad.ctly, eqz) # Top Left
+    glVertex3f(equad.cblx, equad.cbly, eqz)  # Bottom Left
+    glVertex3f(equad.ctlx, equad.ctly, eqz)  # Top Left
+
 
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
     global tx, ty, sticky
-    if buttons in [2,4,6]:
-        if buttons == 6: # mouse 2 + middle mouse button together
+    if buttons in [2, 4, 6]:
+        if buttons == 6:  # mouse 2 + middle mouse button together
             dx += dx
             dy += dy
         tx += dx
         ty += dy
     if buttons == 1 or not (sticky == None):
-        move(x,y,dx,dy)
+        move(x, y, dx, dy)
+
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
@@ -664,24 +705,23 @@ def on_mouse_press(x, y, button, modifiers):
         if sticky == None:
             # Set selected
             for lvl in levellist:
-                if touchingLevel(lvl,x-tx,y-ty):
+                if touchingLevel(lvl, x - tx, y - ty):
                     if lvl == selected:
                         return
                     # lvl found
-                    lvl.select(True,Color(1,0.2,0.2))
+                    lvl.select(True, Color(1, 0.2, 0.2))
                     if not (selected == None):
                         selected.select(False, None)
-                        print("deselected",selected.name)
-                    print("selected",lvl.name)
+                        print("deselected", selected.name)
+                    print("selected", lvl.name)
                     selected = lvl
                     return
             # if no level has been touched
             if not (selected == None):
                 selected.select(False, None)
-                print("deselected",selected.name)
+                print("deselected", selected.name)
             selected = None
-            
-    
+
 
 @window.event
 def on_mouse_release(x, y, button, modifiers):
@@ -690,11 +730,13 @@ def on_mouse_release(x, y, button, modifiers):
     if button == 1:
         sticky = None
 
+
 # DEBUG Variables ###########
 
 drawAB = True
 
 #############################
+
 
 @window.event
 def on_draw():
@@ -702,19 +744,19 @@ def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
 
     for lvl in levellist:
-        lvl.computeTranslation(tx,ty)
+        lvl.computeTranslation(tx, ty)
 
     glBegin(GL_POINTS)
 
-    glColor3f(1,1,1)
-    glVertex3f(tx,ty,0)
+    glColor3f(1, 1, 1)
+    glVertex3f(tx, ty, 0)
 
     glEnd()
 
     glBegin(GL_QUADS)
 
     for quad in quads:
-        quad.computeTranslation(tx,ty)
+        quad.computeTranslation(tx, ty)
         if not (quad.color == None):
             glColor3f(quad.color.r, quad.color.g, quad.color.b)
         else:
@@ -733,7 +775,7 @@ def on_draw():
         drawLine(line, 0.25)
 
     for equad in equads:
-        equad.computeTranslation(tx,ty)
+        equad.computeTranslation(tx, ty)
         if not (equad.color == None):
             glColor3f(equad.color.r, equad.color.g, equad.color.b)
         else:
@@ -744,8 +786,8 @@ def on_draw():
         lvl.drawLines()
         lvl.drawMaps()
         if drawAB:
-            drawEQuad(EQuad.fromABounds(lvl.getAreaBounds()),1)
-    
+            drawEQuad(EQuad.fromABounds(lvl.getAreaBounds()), 1)
+
     for db in dbga:
         if not (db == None):
             drawEQuad(db, 1)
@@ -756,7 +798,7 @@ def on_draw():
     glEnd()
 
     for la in labels:
-        la.computeTranslation(tx,ty)
+        la.computeTranslation(tx, ty)
         if not (la.color == None):
             glColor3f(la.color.r, la.color.g, la.color.b)
         else:
@@ -771,6 +813,7 @@ def on_draw():
     #     m.drawLabel()
     for lvl in levellist:
         lvl.drawLabels()
+
 
 # pyglet.clock.schedule(update_frame, 1/10.0)
 pyglet.app.run()

@@ -1,6 +1,6 @@
 from ndspy import soundArchive
-from zdspy import dataio as d
 
+from zdspy import dataio as d
 
 sdat = soundArchive.SDAT(d.ReadFile("../../DS/snd.sdat"))
 

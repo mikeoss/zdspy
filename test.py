@@ -1,9 +1,4 @@
-from zdspy import nsbmd
-from zdspy import zob
-from zdspy import zmb
-from zdspy import bhio
-from zdspy import dataio as d
-
+from zdspy import bhio, dataio as d, nsbmd, zmb, zob
 
 # f = d.ReadFile("../../DS/dngn_main_f_00.nsbmd")
 
@@ -42,14 +37,12 @@ if False:
     input("> ")
 
 if False:
-    print(d.w_SFix(bytearray(2), 0, -241.9375, 16, 12).hex()) # f180
+    print(d.w_SFix(bytearray(2), 0, -241.9375, 16, 12).hex())  # f180
     print(d.SFix(bytearray.fromhex("e1f0"), 0, 16, 12))
     # print(d.w_SFix(bytearray(2), 0, 241.9375, 16, 12, False).hex())
     print("---")
-    print(d.w_SFix(bytearray(2), 0, -2.5, 8, 7).hex()) # f180
+    print(d.w_SFix(bytearray(2), 0, -2.5, 8, 7).hex())  # f180
     print(d.SFix(bytearray.fromhex("fb00"), 0, 8, 7))
-
-
 
     input("> ")
 
@@ -89,12 +82,12 @@ _zmb = zmb.fromFile("../../DS/demo_title_00.zmb")
 
 plyrh = _zmb.get_child("PLYR")
 for c in plyrh.children:
-    print("Entrance with ID:"+str(c.id))
-    print("X: "+str(c.position_x))
-    print("Y: "+str(c.position_y)) # Automaticaly puts you down/up onto the ground ?
+    print("Entrance with ID:" + str(c.id))
+    print("X: " + str(c.position_x))
+    print("Y: " + str(c.position_y))  # Automaticaly puts you down/up onto the ground ?
     # c.position_x = 20
-    print("Z: "+str(c.position_z))
-    print("Unknown1: "+str(c.unknown1))
+    print("Z: " + str(c.position_z))
+    print("Unknown1: " + str(c.unknown1))
 
 warph = _zmb.get_child("WARP")
 
@@ -106,17 +99,18 @@ for c in warph.children:
 
 objh = _zmb.get_child("MPOB")
 
-objh.addObject(10,0x1a,0x15,"000001000000000000000101000000000000ff010000")
-objh.addObject(10,0x1b,0x15,"000002000000000000000101000000000000ff010000")
-objh.addObject(10,0x1a,0x17,"000003000000000000000101000000000000ff010000")
-objh.addObject(10,0x1a,0x19,"000005000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1A, 0x15, "000001000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1B, 0x15, "000002000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1A, 0x17, "000003000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1A, 0x19, "000005000000000000000101000000000000ff010000")
 
-objh.addObject(9,0x1e,0x19,"000005000000000000000101000000000000ff010000")
+objh.addObject(9, 0x1E, 0x19, "000005000000000000000101000000000000ff010000")
 
 # OBJID:101 XPos:31 YPos:34 HEX:650000001f22000001000000000000000101000000000000ff010000
 
-objh.addObject(39,0x1a,0x12,"000001000000000000000101000000000000ff010000")
+objh.addObject(39, 0x1A, 0x12, "000001000000000000000101000000000000ff010000")
 # objh.addObject(39,29,21,"000001000000000000000101000000000000ff010000")
+
 
 def new_crps(posx, posy, posz):
     crps_npc = bytearray.fromhex("535052432002900100ff00000000000000000000000000002403780000010000")
@@ -128,6 +122,7 @@ def new_crps(posx, posy, posz):
 
     return crps_npc
 
+
 npch = _zmb.get_child("NPCA")
 # crps_npc = bytearray.fromhex("535052432002900100ff00000000000000000000000000002403780000010000")
 
@@ -135,8 +130,8 @@ npch = _zmb.get_child("NPCA")
 # crps_npc = d.w_SFix(crps_npc, 6, 23, n_bits=16, n_bits_int=12)
 # crps_npc = d.w_SFix(crps_npc, 8, 1, n_bits=16, n_bits_int=8)
 
-npch.addNPCRaw(new_crps(29,23,1))
-npch.addNPCRaw(new_crps(31,23,1))
+npch.addNPCRaw(new_crps(29, 23, 1))
+npch.addNPCRaw(new_crps(31, 23, 1))
 
 for c in npch.children:
     print(c.npctype)
@@ -157,16 +152,15 @@ input("> ")
 _zmb = zmb.fromFile("../../DS/dngn_main_f_00.zmb")
 
 
-
 plyh = _zmb.get_child("PLYR")
 
 for c in plyh.children:
-    print("Entrance with ID:"+str(c.id))
-    print("X: "+str(c.position_x))
-    print("Y: "+str(c.position_y)) # Automaticaly puts you down/up onto the ground ?
+    print("Entrance with ID:" + str(c.id))
+    print("X: " + str(c.position_x))
+    print("Y: " + str(c.position_y))  # Automaticaly puts you down/up onto the ground ?
     # c.position_x = 20
-    print("Z: "+str(c.position_z))
-    print("Unknown1: "+str(c.unknown1))
+    print("Z: " + str(c.position_z))
+    print("Unknown1: " + str(c.unknown1))
     # c.position_y = 32
     # print("from " + str(c.position_y) + " to " + str(c.position_y + 100000))
     # print(c.position_x)
@@ -206,7 +200,7 @@ room.unknown1 = 4
 arabh = _zmb.get_child("ARAB")
 
 for c in arabh.children:
-    print("ARAB ID: "+str(c.id))
+    print("ARAB ID: " + str(c.id))
     print("X1: " + str(c.position_x))
     print("Y1: " + str(c.position_y))
     # c.position_y = 276
@@ -218,9 +212,8 @@ for c in arabh.children:
 npch = _zmb.get_child("NPCA")
 
 
-
 for c in npch.children:
-    print("NPCID: "+str(c.npctype))
+    print("NPCID: " + str(c.npctype))
     print("X: " + str(c.position_x))
     print("Y: " + str(c.position_y))
     print("Z: " + str(c.position_z))
@@ -236,12 +229,12 @@ for c in npch.children:
     # c.position_x += 1
     # 16 Bit -> 12 Bit Int, 4 Bit Fraction
 
-npch.addNPCRaw(new_crps(29,23,1))
-npch.addNPCRaw(new_crps(29.5,23,2))
-npch.addNPCRaw(new_crps(30,23,3))
-npch.addNPCRaw(new_crps(30.5,23,4))
-npch.addNPCRaw(new_crps(31,23,5))
-npch.addNPCRaw(new_crps(31.5,23,6))
+npch.addNPCRaw(new_crps(29, 23, 1))
+npch.addNPCRaw(new_crps(29.5, 23, 2))
+npch.addNPCRaw(new_crps(30, 23, 3))
+npch.addNPCRaw(new_crps(30.5, 23, 4))
+npch.addNPCRaw(new_crps(31, 23, 5))
+npch.addNPCRaw(new_crps(31.5, 23, 6))
 
 # zpos: 4, 8, 16, 32 == 1 ?
 
@@ -259,35 +252,34 @@ objh = _zmb.get_child("MPOB")
 
 num = 32
 
-objh.addObject(10,0x1a,0x15,"0000"+hex(num)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1b,0x15,"0000"+hex(num+1)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1c,0x15,"0000"+hex(num+2)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1d,0x15,"0000"+hex(num+3)[2:]+"000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1A, 0x15, "0000" + hex(num)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1B, 0x15, "0000" + hex(num + 1)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1C, 0x15, "0000" + hex(num + 2)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1D, 0x15, "0000" + hex(num + 3)[2:] + "000000000000000101000000000000ff010000")
 
 
-objh.addObject(10,0x1f,0x15,"0000FF000000000000000101000000000000ff010000")
-objh.addObject(10,0x20,0x15,"00001A000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1F, 0x15, "0000FF000000000000000101000000000000ff010000")
+objh.addObject(10, 0x20, 0x15, "00001A000000000000000101000000000000ff010000")
 
 
 num = 152
 
-objh.addObject(10,0x1a,0x18,"0000"+hex(num)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1b,0x18,"0000"+hex(num+1)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1c,0x18,"0000"+hex(num+2)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1d,0x18,"0000"+hex(num+3)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1e,0x18,"0000"+hex(num+4)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x1f,0x18,"0000"+hex(num+5)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x20,0x18,"0000"+hex(num+6)[2:]+"000000000000000101000000000000ff010000")
-objh.addObject(10,0x21,0x18,"0000"+hex(num+7)[2:]+"000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1A, 0x18, "0000" + hex(num)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1B, 0x18, "0000" + hex(num + 1)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1C, 0x18, "0000" + hex(num + 2)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1D, 0x18, "0000" + hex(num + 3)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1E, 0x18, "0000" + hex(num + 4)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x1F, 0x18, "0000" + hex(num + 5)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x20, 0x18, "0000" + hex(num + 6)[2:] + "000000000000000101000000000000ff010000")
+objh.addObject(10, 0x21, 0x18, "0000" + hex(num + 7)[2:] + "000000000000000101000000000000ff010000")
 
 for c in objh.children:
     print(c)
     # c.position_x += 3
     # print(c)
-#addObject
+# addObject
 
 # new_crps.position_x += 1.5
-
 
 
 warph = _zmb.get_child("WARP")

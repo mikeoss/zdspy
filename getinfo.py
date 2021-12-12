@@ -1,15 +1,15 @@
 import os
-from zdspy import dataio as d
+
 import ndspy.lz10
 import ndspy.narc
-from zdspy import nsbmd as znsbmd
-from zdspy import zmb as zzmb
-from zdspy import rom_util
-from zdspy.helpers import ZDS_PH_MAP, ZDS_PH_AREA, ZDS_PH_ILB
+
+from zdspy import dataio as d, nsbmd as znsbmd, rom_util, zmb as zzmb
+from zdspy.helpers import ZDS_PH_AREA, ZDS_PH_ILB, ZDS_PH_MAP
 
 rompath = "./Zelda_PH.nds"
 workdir = "./extracted/root/"
 outdir = "./infodump/"
+
 
 def main():
 
@@ -25,11 +25,10 @@ def main():
         for directory in d:
             dirs.append(os.path.join(r, directory))
 
-
     mapl = []
 
     for d in dirs:
-        mapl.append( ZDS_PH_MAP( d ) )
+        mapl.append(ZDS_PH_MAP(d))
 
     zmbl = {}
 
@@ -44,13 +43,13 @@ def main():
             filename = "zmb/" + mp_name + "_" + str(map_num) + str(map_num_2) + ".zmb"
             print(filename)
             try:
-                zmbl[ zzmb.ZMB( c.getArchive().getFileByName(filename) ) ] = filename
+                zmbl[zzmb.ZMB(c.getArchive().getFileByName(filename))] = filename
             except Exception as err:
                 err_log.append(repr(err) + " | " + filename)
             filename = "nsbmd/" + mp_name + "_" + str(map_num) + str(map_num_2) + ".nsbmd"
             print(filename)
             try:
-                nsbmdl.append( (znsbmd.NSBMD( c.getArchive().getFileByName(filename) ), filename) )
+                nsbmdl.append((znsbmd.NSBMD(c.getArchive().getFileByName(filename)), filename))
             except Exception as err:
                 err_log.append(repr(err) + " | " + filename)
 
@@ -81,7 +80,9 @@ def main():
                         if npc.npctype not in npc_room_list[str(fname)]:
                             npc_room_list[str(fname)][str(npc.npctype)] = 1
                         else:
-                            npc_room_list[str(fname)][str(npc.npctype)] = npc_room_list[str(fname)][str(npc.npctype)] + 1
+                            npc_room_list[str(fname)][str(npc.npctype)] = (
+                                npc_room_list[str(fname)][str(npc.npctype)] + 1
+                            )
                     if npc.npctype not in npc_type_list:
                         npc_type_list[str(npc.npctype)] = 1
                     else:
@@ -92,7 +93,9 @@ def main():
                     if str(wrp.fade_type) not in warp_fade_type_list:
                         warp_fade_type_list[str(wrp.fade_type)] = 1
                     else:
-                        warp_fade_type_list[str(wrp.fade_type)] = warp_fade_type_list[str(wrp.fade_type)] + 1
+                        warp_fade_type_list[str(wrp.fade_type)] = (
+                            warp_fade_type_list[str(wrp.fade_type)] + 1
+                        )
             objh = zmb.get_child("MPOB")
             if not (objh == None):
                 for obj in objh.children:
@@ -107,7 +110,9 @@ def main():
                 if str(roomh.environment_type) not in environment_type_list:
                     environment_type_list[str(roomh.environment_type)] = 1
                 else:
-                    environment_type_list[str(roomh.environment_type)] = environment_type_list[str(roomh.environment_type)] + 1
+                    environment_type_list[str(roomh.environment_type)] = (
+                        environment_type_list[str(roomh.environment_type)] + 1
+                    )
                 if str(roomh.music_id) not in music_id_list:
                     music_id_list[str(roomh.music_id)] = 1
                 else:
@@ -127,7 +132,7 @@ def main():
         except Exception as err:
             err_log.append(repr(err) + " | " + fname)
 
-    #print(sorted(npc_type_list))
+    # print(sorted(npc_type_list))
 
     #######################################################################################
     #               NPCs
@@ -135,18 +140,18 @@ def main():
 
     out_str = ""
     for k, v in sorted(npc_type_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_used_npcs_list_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
-    # Create a list of tuples sorted by index 1 i.e. value field     
-    listofTuples = sorted(npc_type_list.items() ,  key=lambda x: x[1])
+    # Create a list of tuples sorted by index 1 i.e. value field
+    listofTuples = sorted(npc_type_list.items(), key=lambda x: x[1])
     out_str = ""
     # Iterate over the sorted sequence
-    for elem in listofTuples :
+    for elem in listofTuples:
         out_str = str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
-        print(elem[0] , " ::" , elem[1] )
+        print(elem[0], " ::", elem[1])
     f = open(outdir + 'ph_used_npcs_list_sbv.txt', 'wt', encoding='utf-8')
     f.write(out_str[:-1])
 
@@ -159,11 +164,11 @@ def main():
     # npc_room_list
     out_str_complete = ""
     for fname, npcr in npc_room_list.items():
-        # Create a list of tuples sorted by index 1 i.e. value field     
-        listofTuples = sorted(npcr.items() ,  key=lambda x: x[1])
+        # Create a list of tuples sorted by index 1 i.e. value field
+        listofTuples = sorted(npcr.items(), key=lambda x: x[1])
         out_str = ""
         # Iterate over the sorted sequence
-        for elem in listofTuples :
+        for elem in listofTuples:
             out_str = "  " + str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
             # print(elem[0] , " ::" , elem[1] )
         out_str_complete += fname + ":\n" + out_str
@@ -176,18 +181,18 @@ def main():
 
     out_str = ""
     for k, v in sorted(warp_fade_type_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_used_warp_fade_types_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
-    # Create a list of tuples sorted by index 1 i.e. value field     
-    listofTuples = sorted(warp_fade_type_list.items() ,  key=lambda x: x[1])
+    # Create a list of tuples sorted by index 1 i.e. value field
+    listofTuples = sorted(warp_fade_type_list.items(), key=lambda x: x[1])
     out_str = ""
     # Iterate over the sorted sequence
-    for elem in listofTuples :
+    for elem in listofTuples:
         out_str = str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
-        print(elem[0] , " ::" , elem[1] )
+        print(elem[0], " ::", elem[1])
     f = open(outdir + 'ph_used_warp_fade_types_sbv.txt', 'wt', encoding='utf-8')
     f.write(out_str[:-1])
 
@@ -197,18 +202,18 @@ def main():
 
     out_str = ""
     for k, v in sorted(entrance_unknown1_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_plyr_unknown1_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
     out_str_complete = ""
     for fname, npcr in entrance_unknown1_file_list.items():
-        # Create a list of tuples sorted by index 1 i.e. value field     
-        listofTuples = sorted(npcr.items() ,  key=lambda x: x[1])
+        # Create a list of tuples sorted by index 1 i.e. value field
+        listofTuples = sorted(npcr.items(), key=lambda x: x[1])
         out_str = ""
         # Iterate over the sorted sequence
-        for elem in listofTuples :
+        for elem in listofTuples:
             out_str = "  " + str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
             # print(elem[0] , " ::" , elem[1] )
         out_str_complete += fname + ":\n" + out_str
@@ -221,25 +226,24 @@ def main():
 
     out_str = ""
     for k, v in sorted(obj_id_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_obj_id_list_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
-    # Create a list of tuples sorted by index 1 i.e. value field     
-    listofTuples = sorted(obj_id_list.items() ,  key=lambda x: x[1])
+    # Create a list of tuples sorted by index 1 i.e. value field
+    listofTuples = sorted(obj_id_list.items(), key=lambda x: x[1])
     out_str = ""
     # Iterate over the sorted sequence
-    for elem in listofTuples :
+    for elem in listofTuples:
         out_str = str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
-        print(elem[0] , " ::" , elem[1] )
+        print(elem[0], " ::", elem[1])
     f = open(outdir + 'ph_obj_id_list_sbv.txt', 'wt', encoding='utf-8')
     f.write(out_str[:-1])
 
     total_obj_ids = 0
     for k, v in sorted(obj_id_list.items()):
         total_obj_ids = total_obj_ids + v
-
 
     #######################################################################################
     #               ROOM ZMB Header
@@ -248,18 +252,18 @@ def main():
     # environment_type_list
     out_str = ""
     for k, v in sorted(environment_type_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_environment_type_list_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
-    # Create a list of tuples sorted by index 1 i.e. value field     
-    listofTuples = sorted(environment_type_list.items() ,  key=lambda x: x[1])
+    # Create a list of tuples sorted by index 1 i.e. value field
+    listofTuples = sorted(environment_type_list.items(), key=lambda x: x[1])
     out_str = ""
     # Iterate over the sorted sequence
-    for elem in listofTuples :
+    for elem in listofTuples:
         out_str = str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
-        print(elem[0] , " ::" , elem[1] )
+        print(elem[0], " ::", elem[1])
     f = open(outdir + 'ph_environment_type_list_sbv.txt', 'wt', encoding='utf-8')
     f.write(out_str[:-1])
 
@@ -270,25 +274,24 @@ def main():
     # music_id_list
     out_str = ""
     for k, v in sorted(music_id_list.items()):
-        #print(k, v)
+        # print(k, v)
         out_str = out_str + "\n" + str(k) + " " + str(v)
     f = open(outdir + 'ph_music_id_list_abc.txt', 'wt', encoding='utf-8')
     f.write(out_str[1:])
 
-    # Create a list of tuples sorted by index 1 i.e. value field     
-    listofTuples = sorted(music_id_list.items() ,  key=lambda x: x[1])
+    # Create a list of tuples sorted by index 1 i.e. value field
+    listofTuples = sorted(music_id_list.items(), key=lambda x: x[1])
     out_str = ""
     # Iterate over the sorted sequence
-    for elem in listofTuples :
+    for elem in listofTuples:
         out_str = str(elem[0]) + " " + str(elem[1]) + "\n" + out_str
-        print(elem[0] , " ::" , elem[1] )
+        print(elem[0], " ::", elem[1])
     f = open(outdir + 'ph_music_id_list_sbv.txt', 'wt', encoding='utf-8')
     f.write(out_str[:-1])
 
     total_music_ids = 0
     for k, v in sorted(music_id_list.items()):
         total_music_ids = total_music_ids + v
-
 
     #######################################################################################
     #               Model Files
@@ -299,18 +302,18 @@ def main():
     print("NSBMD Stuff:")
     for i, (nsbmd, filename) in enumerate(nsbmdl):
         mdl = nsbmd.children[0].models[0]
-        print("MDL_"+str(i)+" ("+filename+"):")
-        print("  Obj count:", mdl.object_count) # Not very usefull info
-        print("  Material count:", mdl.material_count) # same
+        print("MDL_" + str(i) + " (" + filename + "):")
+        print("  Obj count:", mdl.object_count)  # Not very usefull info
+        print("  Material count:", mdl.material_count)  # same
         print("  Total Vertex count:", mdl.total_vertex_count)
         print("  Object Names:")
         for j, name in enumerate(mdl.object.names):
-            print("  ",j, name)
+            print("  ", j, name)
 
         print("  Material Names:")
         for j, name in enumerate(mdl.material.names):
-            print("  ",j, name)
-        
+            print("  ", j, name)
+
         total_vtx_count += mdl.total_vertex_count
 
     #######################################################################################
@@ -320,33 +323,32 @@ def main():
     print("Error Log:")
     err_string = ""
     for err in err_log:
-        print(" ",err)
+        print(" ", err)
         err_string += err + "\n"
 
     f = open(outdir + 'ERROR_LOG.txt', 'wt', encoding='utf-8')
     f.write(err_string[:-1])
 
     print("## The Legend of Zelda: Phantom Hourglass Rom Info ##")
-    print("Number of Maps: "+str(len(mapl)))
-    print("Number of Areas: "+str(total_areas))
-    print("Number of Areas WITHOUT a Model File: "+str(total_areas - len(nsbmdl)))
+    print("Number of Maps: " + str(len(mapl)))
+    print("Number of Areas: " + str(total_areas))
+    print("Number of Areas WITHOUT a Model File: " + str(total_areas - len(nsbmdl)))
     print("## Object Info ##")
-    print("Number of total Objects used: "+str(total_obj_ids))
-    print("Number of unique Objects used: "+str(len(obj_id_list)))
+    print("Number of total Objects used: " + str(total_obj_ids))
+    print("Number of unique Objects used: " + str(len(obj_id_list)))
     print("## NPC Info ##")
-    print("Number of total NPCs: "+str(total_npcs))
-    print("Number of unique NPCs: "+str(len(npc_type_list)))
+    print("Number of total NPCs: " + str(total_npcs))
+    print("Number of unique NPCs: " + str(len(npc_type_list)))
     print("## ROOM Header Info ##")
-    print("Number of total lighting ids used: "+str(total_environment_types))
-    print("Number of unique lighting ids used: "+str(len(environment_type_list)))
-    print("Number of total music ids used: "+str(total_music_ids))
-    print("Number of unique music ids used: "+str(len(music_id_list)))
+    print("Number of total lighting ids used: " + str(total_environment_types))
+    print("Number of unique lighting ids used: " + str(len(environment_type_list)))
+    print("Number of total music ids used: " + str(total_music_ids))
+    print("Number of unique music ids used: " + str(len(music_id_list)))
     print("## Warp / Entrance Info ##")
-    print("Number of Entrances / Warps placed in Levels: "+str(total_warps))
-    print("Number of unique Fade / Transition types used: "+str(len(warp_fade_type_list)))
+    print("Number of Entrances / Warps placed in Levels: " + str(total_warps))
+    print("Number of unique Fade / Transition types used: " + str(len(warp_fade_type_list)))
     print("## World / Static Model Info ##")
-    print("Total Number of Vertecies: "+str(total_vtx_count))
-
+    print("Total Number of Vertecies: " + str(total_vtx_count))
 
     print("Room Hex List:")
     print("8 = Lighting ID")
@@ -359,6 +361,7 @@ def main():
     print("###################################")
 
     print(npc_room_list)
+
 
 if __name__ == '__main__':
     main()
