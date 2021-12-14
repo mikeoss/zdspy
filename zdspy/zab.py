@@ -2,12 +2,12 @@ from . import dataio as d, gheader as gh
 from .helpers import debug_print
 
 ###############################################################
-## .zab  (ZCAB) File Start
+# .zab  (ZCAB) File Start
 ###############################################################
 
 
 class ZAB:  # ZCAB:
-    'Zelda Course Arrangement Binary (.zab)'
+    """Zelda Course Arrangement Binary (.zab)."""
 
     def __init__(self, data):
         self.data = data
@@ -39,7 +39,8 @@ class ZAB:  # ZCAB:
 
 
 class ZCAB_CABM(gh.ZDS_GenericElementHeaderRaw):
-    'Zelda Course Arrangement Binary (.zab) Course Arrangement Binary Maplist'
+    """Zelda Course Arrangement Binary (.zab) Course Arrangement Binary Maplist."""
+
     # Course Arangement Binary Maplist
     def init(self):
         self.unknwn1 = d.UInt8(self.data, 8)
@@ -97,7 +98,8 @@ class ZCAB_CABM(gh.ZDS_GenericElementHeaderRaw):
 
 
 class ZCAB_CABM_CE:
-    'Zelda Course Arrangement Binary (.zab) Course Arrangement Binary Maplist Child Element'
+    """Zelda Course Arrangement Binary (.zab) Course Arrangement Binary Maplist Child Element."""
+
     # Course Arangement Binary Maplist CE
     def __init__(self, data, num):
         self.data = data
@@ -135,7 +137,7 @@ class ZCAB_CABM_CE:
 
 
 class ZCAB_CABI(gh.ZDS_GenericElementHeader):
-    'Zelda Course Arrangement Binary (.zab) Course Arangement Binary Icons'
+    """Zelda Course Arrangement Binary (.zab) Course Arangement Binary Icons."""
 
     def init(self):
         self.pointer = 12
@@ -166,7 +168,7 @@ class ZCAB_CABI(gh.ZDS_GenericElementHeader):
 
 
 class ZCAB_CABI_CE:
-    'Zelda Course Arrangement Binary (.zab) Course Arangement Binary Icons Child Element'
+    """Zelda Course Arrangement Binary (.zab) Course Arangement Binary Icons Child Element."""
 
     def __init__(self, data, num):
         self.size = len(data)
@@ -193,13 +195,13 @@ class ZCAB_CABI_CE:
         )
 
     def save(self):
-        return self.data + b'\xFF\xFF\xFF'
+        return self.data + b"\xFF\xFF\xFF"
 
 
 ################################################################
-## .zab  (ZCAB) File END
+# .zab  (ZCAB) File END
 ###############################################################
 
 
-def fromFile(path):
+def from_file(path):
     return ZAB(d.ReadFile(path))

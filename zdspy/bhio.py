@@ -2,7 +2,7 @@ from . import dataio as d, gheader as gh
 from .helpers import debug_print
 
 ################################################################
-## .bhio  (DNFH) File START
+# .bhio  (DNFH) File START
 ###############################################################
 
 """
@@ -152,7 +152,7 @@ class BHIO(gh.ZDS_GenericElementHeaderRaw):
 
 
 ################################################################
-## .bhio  (DNFH) File END
+# .bhio  (DNFH) File END
 ###############################################################
 
 

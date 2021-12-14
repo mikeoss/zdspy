@@ -2,12 +2,12 @@ from . import dataio as d, gheader as gh
 from .helpers import debug_print
 
 ################################################################
-## .zmb  (ZMB) File END
+# .zmb  (ZMB) File END
 ###############################################################
 
 
 class ZMB_WARP(gh.ZDS_GenericElementHeader):
-    """WARP section"""
+    """WARP section."""
 
     calc_child_size: int = 0
     children_count: int = 0
@@ -37,11 +37,11 @@ class ZMB_WARP(gh.ZDS_GenericElementHeader):
 
         for _ in range(self.children_count):
             self.children.append(
-                ZMB_WARP_CE.fromBinary(self.data[self.offset : self.offset + self.child_size])
+                ZMB_WARP_CE.from_binary(self.data[self.offset : self.offset + self.child_size])
             )
             self.offset = self.offset + self.child_size
 
-    def addWarp(self, fade_type, map_id, destination_warp_id, str16_destination, run_direction):
+    def add_warp(self, fade_type, map_id, destination_warp_id, str16_destination, run_direction):
         largest_uid = 0
         for c in self.children:
             if c.UID >= largest_uid:
@@ -59,7 +59,7 @@ class ZMB_WARP(gh.ZDS_GenericElementHeader):
             )
         )
 
-    def randoReplace(self, warp_list):
+    def rando_replace(self, warp_list):
         self.children = warp_list
 
     def calculate_size(self) -> int:
@@ -80,7 +80,7 @@ class ZMB_WARP(gh.ZDS_GenericElementHeader):
 
 
 class ZMB_WARP_CE:
-    """A single warp object"""
+    """A single warp object."""
 
     UID: int = 0
     fade_type: int = 0
@@ -100,8 +100,8 @@ class ZMB_WARP_CE:
         debug_print(self)
 
     @classmethod
-    def fromBinary(cls, data: bytearray) -> type("ZMB_WARP_CE"):
-        UID = d.UInt8(data, 0)
+    def from_binary(cls, data: bytearray) -> "ZMB_WARP_CE":
+        uid = d.UInt8(data, 0)
         fade_type = d.UInt8(data, 1)
         map_id = d.UInt8(data, 2)
         destination_warp_id = d.UInt8(data, 3)
@@ -115,9 +115,9 @@ class ZMB_WARP_CE:
         else:
             run_direction = d.UInt32(data, 20)
 
-        return ZMB_WARP_CE(UID, fade_type, map_id, destination_warp_id, destination, run_direction)
+        return ZMB_WARP_CE(uid, fade_type, map_id, destination_warp_id, destination, run_direction)
 
-    def cleanDestination(self) -> str:
+    def clean_destination(self) -> str:
         out = ""
         for c in self.destination:
             if c in "abcdefghijklmnopqrstuvwxyz_":
@@ -140,8 +140,8 @@ class ZMB_WARP_CE:
             + str(self.run_direction)
         )
 
-    def clone(self) -> type("ZMB_WARP_CE"):
-        """Returns a new instance with the same values."""
+    def clone(self) -> "ZMB_WARP_CE":
+        """Return a new instance with the same values."""
         return ZMB_WARP_CE(
             self.UID,
             self.fade_type,
@@ -263,7 +263,7 @@ class ZMB_MPOB(gh.ZDS_GenericElementHeader):
             )
             self.offset = self.offset + self.child_size
 
-    def addObject(self, objid, posx, posy, rdata):
+    def add_object(self, objid, posx, posy, rdata):
         buffer = bytearray(self.child_size)
 
         buffer = d.w_UInt32(buffer, 0, objid)
@@ -294,7 +294,7 @@ class ZMB_MPOB(gh.ZDS_GenericElementHeader):
 
 
 class ZMB_NPCA(gh.ZDS_GenericElementHeader):
-    """NPCA Section"""
+    """NPCA Section."""
 
     calc_child_count: int = 0
 
@@ -326,7 +326,7 @@ class ZMB_NPCA(gh.ZDS_GenericElementHeader):
             )
             self.offset = self.offset + self.child_size
 
-    def addNPCRaw(self, data) -> type("ZMB_NPCA"):
+    def add_npc_raw(self, data) -> "ZMB_NPCA":
         if len(data) != self.child_size:
             debug_print("[NPCA] Could not create new NPC")
             return None
@@ -334,9 +334,9 @@ class ZMB_NPCA(gh.ZDS_GenericElementHeader):
         self.children.append(new_npc)
         return new_npc
 
-    def addNPC(
+    def add_npc(
         self, npctype, xpos, ypos, link, data
-    ) -> type("ZMB_NPCA"):  # TODO Unique fields as inputs
+    ) -> "ZMB_NPCA":  # TODO Unique fields as inputs
         new_data = bytearray(self.child_size)
 
         new_data[:4] = bytearray.fromhex(npctype)
@@ -370,7 +370,7 @@ class ZMB_NPCA(gh.ZDS_GenericElementHeader):
 
 
 class ZMB_NPCA_CE:
-    """A single NPC object"""
+    """A single NPC object."""
 
     npctype: str
     position_x: float = 0.0
@@ -443,7 +443,7 @@ class ZMB_NPCA_CE:
 
 
 class ZMB_ROOM(gh.ZDS_GenericElementHeaderRaw):
-    """ROOM section"""
+    """ROOM section."""
 
     unknown1: int
     environment_type: int
@@ -502,7 +502,7 @@ class ZMB_ROOM(gh.ZDS_GenericElementHeaderRaw):
 
 
 class ZMB_ARAB(gh.ZDS_GenericElementHeader):
-    """ARAB section"""
+    """ARAB section."""
 
     @property
     def child_size(self) -> int:
@@ -587,7 +587,7 @@ class ZMB_ARAB_CE:
 
 
 class ZMB_PLYR(gh.ZDS_GenericElementHeaderRaw):
-    """PLYR section"""
+    """PLYR section."""
 
     children: list = []
     children_count: int = 0
@@ -619,7 +619,6 @@ class ZMB_PLYR(gh.ZDS_GenericElementHeaderRaw):
                 ZMB_PLYR_CE(self.data[self.offset : self.offset + self.child_size], i)
             )
             self.offset = self.offset + self.child_size
-        # print("LightingID:"+str(self.lighting_id)+" UNKNWN1:"+str(self.unknown1)+" UNKNWN2:"+str(self.unknown2)+" MUSICID:"+str(self.music_id)+ " HEX:"+str(self.data[13:].hex()))
 
     def calculate_size(self) -> int:
         self.size = self.header_size + self.child_size * len(self.children)
@@ -894,7 +893,6 @@ class ZMB_RALB_NODE:  # TODO
         )
 
     def save(self) -> bytearray:
-        hs = 12
         buffer = self.data
         buffer = d.w_SFix(buffer, 0, self.position_x, 16, 12)  # PosX
         buffer = d.w_SFix(buffer, 2, self.position_y, 16, 12)  # PosY
@@ -903,7 +901,7 @@ class ZMB_RALB_NODE:  # TODO
 
 
 class ZMB_ROMB(gh.ZDS_GenericElementHeaderRaw):  # TODO Investigate!
-    """ROMB section"""
+    """ROMB section."""
 
     @property
     def header_size(self) -> int:
@@ -927,7 +925,7 @@ class ZMB_ROMB(gh.ZDS_GenericElementHeaderRaw):  # TODO Investigate!
 
 
 class ZMB:
-    """ZMB - Zelda Map Binary?"""
+    """ZMB - Zelda Map Binary."""
 
     data: bytearray
     identification: str
@@ -958,9 +956,8 @@ class ZMB:
             # debug_print("Pointer:",self.offset,"HEX:",self.data[self.offset:].hex())
             if self.offset >= len(self.data):
                 raise Exception(
-                    'Not enough children in file and EOF reached. The children count must be {} but it was: {}'.format(
-                        self.children_count, len(self.children)
-                    )
+                    f"Not enough children in file and EOF reached. The children count must "
+                    f"be {self.children_count} but it was: {len(self.children)}"
                 )
             self.tmp = d.UInt32(self.data, self.offset + 4)
             gen = gh.NDS_GenericTempContainer(self.data[self.offset : self.offset + self.tmp])
@@ -993,30 +990,41 @@ class ZMB:
                 self.children.append(gen)
 
         self.npctypes = {  # TODO Add More NPC Types and/or remove/relocate this
-            "Corpse": "53505243",  # Corpse / Skelleton | CRPS
-            "Spikeroller": "4C525053",  # Rolling Spikes | LRPS
-            "Navimessage": "47534D4E",  # Message that Ceila says? | GMSN | ExNPC: 47534D4ED401B40100FF00000000000000000000010100007100780000010000  |  ( copied a corpse switched npc type to this and ceila said its text upon entering the room )
-            "Camerahighlight": "52415441",  # Camera Highlight | RATA | Camera scrolls to location of npc and back to link
-            "CHOB": "424F4843",  # Something todo with Paths ? | BOHC
-            "Bluephantom": "52534843",  # Blue Phantom / Chaser? | RSHC
-            "SWOB": "424F5753",  # Unknown | BOWS
-            "Redphantom": "32534843",  # Red Phantom | CHS2
-            "ITGE": "45475449",  # Unknown3
+            # Corpse / Skelleton | CRPS
+            "Corpse": "53505243",
+            # Rolling Spikes | LRPS
+            "Spikeroller": "4C525053",
+            # Message that Ceila says?
+            # | GMSN
+            # | ExNPC: 47534D4ED401B40100FF00000000000000000000010100007100780000010000
+            # | (copied a corpse switched npc type to this and ceila said its text upon entering the room)
+            "Navimessage": "47534D4E",
+            # Camera Highlight | RATA | Camera scrolls to location of npc and back to link
+            "Camerahighlight": "52415441",
+            # Something todo with Paths ? | BOHC
+            "CHOB": "424F4843",
+            # Blue Phantom / Chaser? | RSHC
+            "Bluephantom": "52534843",
+            # Unknown | BOWS
+            "SWOB": "424F5753",
+            # Red Phantom | CHS2
+            "Redphantom": "32534843",
+            # Unknown3
+            "ITGE": "45475449",
         }
 
-    def getNPCType(self, type: str):
+    def get_npc_type(self, type: str):
         if type in self.npctypes:
             return self.npctypes[type]
 
-        debug_print("NPC Type not found: \"" + type + "\"")
-        raise ValueError("NPC Type not found: \"" + type + "\"")
+        raise ValueError(f'NPC Type not found: "{type}"')
 
     def get_child(self, child_identification: str):
         for child in self.children:
             if child.identification == child_identification:
                 return child
 
-        raise ValueError("[ZMB] Child not found: \"" + child_identification + "\"")
+        raise ValueError(f'[ZMB] Child not found: "{child_identification}"')
 
     def calculate_size(self) -> int:
         tmp_size = 32
@@ -1043,9 +1051,9 @@ class ZMB:
 
 
 ################################################################
-## .zmb  (ZMB) File END
+# .zmb  (ZMB) File END
 ###############################################################
 
 
-def fromFile(path):
+def from_file(path):
     return ZMB(d.ReadFile(path))

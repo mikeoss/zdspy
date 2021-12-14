@@ -10,10 +10,10 @@ class IByteOrderMark:
     byte_order_mark_string: str = "feff"
 
     def is_big_endian(self) -> bool:
-        return self.byte_order_mark_string == BYTE_ORDER_MARK_BIG_ENDIAN
+        return self.byte_order_mark_string == self.BYTE_ORDER_MARK_BIG_ENDIAN
 
     def is_little_endian(self) -> bool:
-        return not is_big_endian()
+        return not self.is_big_endian()
 
 
 class ZDS_GenericElementHeaderIDO(ABC):

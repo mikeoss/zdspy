@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractclassmethod, abstractmethod
+from abc import abstractclassmethod, abstractmethod
 from collections import defaultdict
 import struct
 
@@ -75,7 +75,7 @@ class ZMB_MPOB_Location(Location):
                 ZMB_MPOB_Location._zmb_filename_mapping[self._zmb_filepath] = self.zmb_file
 
     def set_location(self, value: int):
-        zmb_child_element: zmb.ZMB_MPOB_CE = self.zmb_file.get_child('MPOB').children[
+        zmb_child_element: zmb.ZMB_MPOB_CE = self.zmb_file.get_child("MPOB").children[
             self.child_index
         ]
         zmb_child_element.item_id = value
@@ -83,7 +83,7 @@ class ZMB_MPOB_Location(Location):
 
     @property
     def _narc_filepath(self):
-        """The filepath of the NARC archive (ending with '.bin' extension) containing this ZMB file."""
+        """Return the filepath of the NARC archive (ending with '.bin' extension) containing this ZMB file."""
         path: list[str] = []
         for part in self.file_path.split("/"):
             path.append(part)
@@ -92,7 +92,7 @@ class ZMB_MPOB_Location(Location):
 
     @property
     def _zmb_filepath(self):
-        """The filepath of the ZMB file within its parent NARC archive."""
+        """Return the filepath of the ZMB file within its parent NARC archive."""
         index: int
         part: str
         for index, part in enumerate(self.file_path.split("/")):

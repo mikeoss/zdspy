@@ -80,21 +80,8 @@ class ZOB(ABC):
         return buffer
 
 
-class ZOB_NPC(ZOB):
-    """npctype.zob file"""
-
-    def __init__(self, data):
-        super().__init__(data)
-
-        self.pointer = 0x10
-        for i in range(self.children_count):
-            self.children.append(ZOB_NPC_CE(self.data[self.pointer : self.pointer + 4]))
-            debug_print(i, "-", self.children[len(self.children) - 1])
-            self.pointer = self.pointer + 4
-
-
 class ZOB_MOTYPE(ZOB):
-    """motype.zob file"""
+    """A `motype.zob` file."""
 
     # TODO: implement this
     pass

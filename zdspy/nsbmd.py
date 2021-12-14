@@ -4,7 +4,7 @@ from . import dataio as d, gheader as gh
 from .helpers import debug_print
 
 ################################################################
-## .nsbmd  (MDL0) File Start
+# .nsbmd  (MDL0) File Start
 ###############################################################
 
 
@@ -193,7 +193,9 @@ class NSBMD_MDL0_MDL:
         #     self.tmp_total_obj_offset_old = self.tmp_total_obj_offset
         #     self.tmp_total_obj_offset += self.tmp_object_size
         #     debug_print("OBJ_"+str(i)+": Size: ",self.tmp_object_size)
-        #     self.objects.append( NSBMD_MDL0_MDL_OBJ( self.data[self.pointer+self.tmp_total_obj_offset_old:self.pointer+self.tmp_total_obj_offset] , self.tmp_object_size ) )
+        #     self.objects.append( NSBMD_MDL0_MDL_OBJ(
+        #       self.data[self.pointer+self.tmp_total_obj_offset_old:self.pointer+self.tmp_total_obj_offset] , self.tmp_object_size )
+        #     )
         #     break # TODO Remove ?
         # for i, o in enumerate(self.objects):
         #     debug_print("List_OBJ_"+str(i)+": "+str(o.data.hex())+"\n\n")
@@ -500,7 +502,7 @@ class NSBMD(gh.ZDS_GenericFileHeader):
 
         self.pointer = d.UInt32(self.data, self.pointer)  # Offset after header ? (14 00 00 00)
 
-        for i in range(self.children_count):
+        for _ in range(self.children_count):
             self.tmp = d.UInt32(self.data, self.pointer + 4)
             gen = gh.NDS_GenericTempContainerNR(self.data[self.pointer : self.pointer + self.tmp])
             self.pointer = self.pointer + self.tmp
@@ -517,9 +519,9 @@ class NSBMD(gh.ZDS_GenericFileHeader):
 
 
 ################################################################
-## .nsbmd  (MDL0) File END
+# .nsbmd  (MDL0) File END
 ###############################################################
 
 
-def fromFile(path):
+def from_file(path):
     return NSBMD(d.ReadFile(path))

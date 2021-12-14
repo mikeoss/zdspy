@@ -23,7 +23,6 @@ def Encode(data: str) -> bytearray:
 #
 def w_UTF8String(data: bytearray, offset: int, length: int, string: str) -> bytearray:
     """Write the str `string` into the bytearray `data` at offset `offset` with length `length` using the UTF-8 encoding."""
-
     if len(string) > length:
         debug_print(
             "[WARNING] String too long for valid space: " + str(length) + " - string truncated!"
@@ -218,9 +217,9 @@ def w_SInt8(data: bytearray, offset: int, value: int, is_little_endian: bool = T
 # https://stackoverflow.com/questions/32675679/convert-binary-string-to-bytearray-in-python-3
 def _bitstring_to_bytes(s: str, is_little_endian: bool = True) -> bytearray:
     if is_little_endian:
-        return int(s, 2).to_bytes(len(s) // 8, byteorder='little')
+        return int(s, 2).to_bytes(len(s) // 8, byteorder="little")
     else:
-        return int(s, 2).to_bytes(len(s) // 8, byteorder='big')
+        return int(s, 2).to_bytes(len(s) // 8, byteorder="big")
 
 
 def w_SFix(data, offset, newdata, n_bits=32, n_bits_int=16, islittleendian=True):
@@ -238,7 +237,7 @@ def w_SFix(data, offset, newdata, n_bits=32, n_bits_int=16, islittleendian=True)
         nums = int(nums[0])
 
         f = ""
-        for i in range(n_bits - n_bits_int):
+        for _ in range(n_bits - n_bits_int):
             fract = float("0." + fract) * 2
             _f = str(fract).split(".")
             f = f + _f[0]
@@ -268,7 +267,7 @@ def w_SFix(data, offset, newdata, n_bits=32, n_bits_int=16, islittleendian=True)
         i = _twos(i)
 
         list_i = list(i)
-        list_i[0] = '1'
+        list_i[0] = "1"
         i = "".join(list_i)
 
         _out = i + _ones(f)
@@ -296,7 +295,7 @@ def w_UFix(data, offset, newdata, n_bits=32, n_bits_int=16, islittleendian=True)
         nums = int(nums[0])
 
         f = ""
-        for i in range(n_bits - n_bits_int):
+        for _ in range(n_bits - n_bits_int):
             fract = float("0." + fract) * 2
             _f = str(fract).split(".")
             f = f + _f[0]

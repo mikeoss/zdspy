@@ -1,5 +1,3 @@
-import sys
-
 from . import dataio as d
 from .helpers import debug_print
 
@@ -51,7 +49,7 @@ class MAP2D_PAL:  # .nbfp
         self.palette = []
 
         offset = 0
-        for i in range(int(self.size / 2)):
+        for _ in range(int(self.size / 2)):
             np = MAP2D_PAL_CE(self.data[offset : offset + 2])
             self.palette.append(np)
             offset = offset + 2
@@ -61,10 +59,10 @@ class MAP2D_PAL:  # .nbfp
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            debug_print("Module \"PIL\" not installed!")
+            debug_print("Module 'PIL' not installed!")
             return None
 
-        image = Image.new('RGB', (16, 16), color='black')
+        image = Image.new("RGB", (16, 16), color="black")
         drawing_image = ImageDraw.Draw(image)
         x = 0
         y = 0
@@ -104,7 +102,7 @@ class MAP2D_SCREEN_CE:
         self.flip_y = bool(int(self.bitstring[4]))
         self.flip_x = bool(int(self.bitstring[5]))
 
-        self.tile_num = int(self.bitstring[6:].rjust(16, '0'), base=2)
+        self.tile_num = int(self.bitstring[6:].rjust(16, "0"), base=2)
 
     def get_graphic(self, ts):
         # ts = tile_set
@@ -120,7 +118,7 @@ class MAP2D_SCREEN_CE:
             return tile.get_tile()
 
         if tile.color_data == []:
-            raise TypeError('Tile has no palette!')
+            raise TypeError("Tile has no palette!")
 
         tile_size = tile.tile_size
 
@@ -159,7 +157,7 @@ class MAP2D_SCREEN:  # .nbfs
         self.gfx = []
 
         offset = 0
-        for i in range(self.data_size):
+        for _ in range(self.data_size):
             ns = MAP2D_SCREEN_CE(self.data[offset : offset + 2])
             self.gfx.append(ns)
             offset = offset + 2
@@ -172,16 +170,16 @@ class MAP2D_SCREEN:  # .nbfs
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            debug_print("Module \"PIL\" not installed!")
+            debug_print("Module 'PIL' not installed!")
             return None
 
-        if self.tile_set == None:
-            raise TypeError('No tileset set!')
+        if self.tile_set is None:
+            raise TypeError("No tileset set!")
 
         tile_size = self.tile_set.tile_size
 
         # Create a new Image with the NDSes screen rosolution (256x192  |  4:3)
-        image = Image.new('RGB', (256, 192), color='black')
+        image = Image.new("RGB", (256, 192), color="black")
         drawing_image = ImageDraw.Draw(image)
 
         # TODO: Turn off debug vars
@@ -314,25 +312,24 @@ class MAP2D_TILES:  # .nbfc
         self.pal = None
 
         offset = 0
-        for i in range(self.num_tiles):
+        for _ in range(self.num_tiles):
             nt = MAP2D_TILES_CE(self.data[offset : offset + self.tile_size_sqd], self.tile_size)
             self.tiles.append(nt)
             offset = offset + self.tile_size_sqd
 
     def bitmap(self):
-
         try:
             from PIL import Image, ImageDraw
         except ImportError:
-            debug_print("Module \"PIL\" not installed!")
+            print("Module 'PIL' not installed!")
             return None
 
-        if self.pal == None:
-            raise TypeError('No palette set!')
+        if self.pal is None:
+            raise TypeError("No palette set!")
 
         tile_size = self.tile_size
 
-        image = Image.new('RGB', (tile_size, self.num_tiles), color='black')
+        image = Image.new("RGB", (tile_size, self.num_tiles), color="black")
         drawing_image = ImageDraw.Draw(image)
 
         for i, t in enumerate(self.tiles):
@@ -411,9 +408,8 @@ class MAP2D:
         path_palette="",
     ):
 
-        # import PIL
         try:
-            from PIL import Image, ImageDraw
+            from PIL import Image, ImageDraw  # noqa: F401
         except ImportError:
             debug_print("Please install PIL to use this feature!")
             return None
@@ -449,7 +445,7 @@ def dump_bitmap_all(input_path, output_path):
 
     dirs = []
     # r=root, d=directories, f = files
-    for r, directory, f in os.walk(workdir):
+    for r, directory, _ in os.walk(workdir):
         for directory2 in directory:
             path = os.path.join(r, directory2)
             dirs.append(path)

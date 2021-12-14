@@ -21,16 +21,16 @@ class ZDS_PH_AREA:
     identification: str = "-1"
     file_compression_type: int = 0
 
-    def getName(self):
-        """Returns the entire original filename `mapXY.bin`"""
+    def get_name(self):
+        """Return the entire original filename `mapXY.bin`."""
         return self.filename
 
-    def getArchive(self) -> ndspy.narc.NARC:
-        """Returns the NARC archive (`ndspy.narc.NARC`)"""
+    def get_archive(self) -> ndspy.narc.NARC:
+        """Return the NARC archive (`ndspy.narc.NARC`)."""
         return self.narc
 
-    def getID(self) -> str:
-        """The double digits (XY part) in `mapXY.bin` as a string"""
+    def get_id(self) -> str:
+        """Return the `XY` in `mapXY.bin` as a string."""
         return self.identification
 
     def __init__(self, filename: str, data: bytearray, file_compression_type: int):
@@ -56,7 +56,7 @@ class ZDS_PH_AREA:
 
 
 class ZDS_PH_ILB:  # Island Binary
-    """island.ilb - todo"""
+    """island.ilb - todo."""
 
     data: bytearray
 
@@ -77,11 +77,12 @@ class ZDS_PH_MAP:
     is_island: bool = False
     island_ilb: ZDS_PH_ILB
 
-    def getName(self):
-        """The name of the folder in the `/Map/` directory, aka the Map name."""
+    def get_name(self):
+        """Return the name of the folder in the `/Map/` directory (the Map name)."""
         return self.name
 
-    def __init__(
+    # TODO: Why are there two constructors? Rename this `__init2__` for now.
+    def __init2__(
         self,
         name: str,
         nummaps: int,
@@ -94,7 +95,7 @@ class ZDS_PH_MAP:
         self.course_bin = coursebin
 
         self.children = children
-        if not (island_ilb == None):
+        if island_ilb is not None:
             self.is_island = True
         else:
             self.is_island = False
@@ -106,7 +107,7 @@ class ZDS_PH_MAP:
             print(folderpath)
         self.name = os.path.basename(os.path.normpath(folderpath))
         self.children = []
-        for r, di, f in os.walk(folderpath):
+        for r, _, f in os.walk(folderpath):
             for file in f:
                 if debug_print:
                     print(" - " + file)
@@ -120,9 +121,13 @@ class ZDS_PH_MAP:
                 elif "map" in file:
                     self.children.append(ZDS_PH_AREA(file, d.ReadFile(os.path.join(r, file)), 10))
 
-    def saveToFolder(self, save_path: str):
-        """Saves `course.bin`, all map files `mapXY.bin` and if it's an island also its `island.ilb` file to disk into `save_path`."""
+    def save_to_folder(self, save_path: str):
+        """
+        Save files to a folder at `save_path`.
 
+        Saves `course.bin`, all map files `mapXY.bin` and if it's an island also its `island.ilb` file
+        to disk into `save_path`.
+        """
         # Save course.bin
         try:
             os.makedirs(save_path + self.name + "/")
@@ -130,13 +135,13 @@ class ZDS_PH_MAP:
             # directory already exists
             pass
 
-        with open(save_path + self.name + "/course.bin", 'w+b') as f:
+        with open(save_path + self.name + "/course.bin", "w+b") as f:
             f.write(self.course_bin.save())
 
         # Save island.ilb
         try:
-            if not (self.island_ilb == None):
-                with open(save_path + self.name + "/island.ilb", 'w+b') as f:
+            if self.island_ilb is not None:
+                with open(save_path + self.name + "/island.ilb", "w+b") as f:
                     f.write(self.island_ilb.save())
         except AttributeError:
             pass
@@ -144,8 +149,8 @@ class ZDS_PH_MAP:
         # Save Maps
         child: ZDS_PH_AREA
         for child in self.children:
-            with open(save_path + self.name + "/" + child.filename, 'w+b') as f:
+            with open(f"{save_path}{self.name}/{child.filename}", "w+b") as f:
                 f.write(child.save())
 
-    def addMap(self, narcdata):
+    def add_map(self, narcdata):
         pass

@@ -14,7 +14,7 @@ def extract(rom_path, e_path, confirm=True, debug_log=True):
     output = e_path
 
     if confirm:
-        inp = input("Extract ROM Contents to \"" + os.path.abspath(output) + "\"? [y/n]")
+        inp = input(f'Extract ROM Contents to "{os.path.abspath(output)}"? [y/n]')
         if inp != "y":
             debug_print("Extraction cancelled!")
             return
@@ -37,7 +37,7 @@ def extract(rom_path, e_path, confirm=True, debug_log=True):
                 pass
 
             if not os.path.isfile(path_wf):
-                with open(path_wf, 'w+b') as f:
+                with open(path_wf, "w+b") as f:
                     f.write(file)
                 if debug_log:
                     debug_print("[Extracted] " + rom_internal_file_name + " -> " + path_wf)
@@ -59,13 +59,8 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
 
     if confirm:
         inp = input(
-            "Insert ROM Contents from \""
-            + os.path.abspath(i_path)
-            + "\" into \""
-            + os.path.abspath(rom_path)
-            + "\" and save to file \""
-            + os.path.abspath(save_path)
-            + "\"? [y/n]"
+            f'Insert ROM Contents from "{os.path.abspath(i_path)}" into "{os.path.abspath(rom_path)}" '
+            f'and save to file "{+ os.path.abspath(save_path)}? [y/n]"'
         )
         if inp != "y":
             debug_print("Insertion cancelled!")
@@ -81,7 +76,7 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
             # print(path_wf)
 
             if os.path.isfile(path_wf):
-                with open(path_wf, 'rb') as f:
+                with open(path_wf, "rb") as f:
                     bin_file = f.read()
 
                     if only_modified:
@@ -112,7 +107,7 @@ def replace(rom_path, i_path, save_path, confirm=True, only_modified=False, debu
 
     if debug_log:
         debug_print("Saving rom...")
-    with open(save_path, 'wb') as f:
+    with open(save_path, "wb") as f:
         f.write(rom.save())
     if debug_log:
         debug_print("Done!")

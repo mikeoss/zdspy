@@ -2,7 +2,7 @@ from . import dataio as d, gheader as gh
 from .helpers import debug_print
 
 ################################################################
-## .clb  (ZCLB) File START
+# .clb  (ZCLB) File START
 ###############################################################
 
 # Course List Binary
@@ -40,7 +40,6 @@ class ZCLB_CE:
 
     def save(self):
         buffer = bytearray(self.calculate_size())
-        pointer = 0
 
         buffer = d.w_UInt32(buffer, 0, self.size)
 
@@ -96,7 +95,7 @@ class CLB(gh.ZDS_GenericElementHeaderRaw):  # ZCLB():
 
 
 ################################################################
-## .clb  (ZCLB) File END
+# .clb  (ZCLB) File END
 ###############################################################
 
 
